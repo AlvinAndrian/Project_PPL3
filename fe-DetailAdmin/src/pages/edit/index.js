@@ -1,14 +1,15 @@
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
+import HeaderEdit from '../../components/HeaderEdit'
 
-const Feed = () => {
+const Edit = () => {
     return (
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-            <Text>Feed</Text>
+        <View>
+            <HeaderEdit />
         </View>
     )
 }
 
-export default Feed
+export default Edit
 
 const styles = StyleSheet.create({})

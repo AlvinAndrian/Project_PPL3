@@ -1,7 +1,8 @@
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 
-const index = () => {
+
+const Search = () => {
     return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
             <Text>Search</Text>
@@ -9,6 +10,6 @@ const index = () => {
     )
 }
 
-export default index
+export default Search
 
 const styles = StyleSheet.create({})

@@ -11,20 +11,10 @@ import IconAdd from './add.svg';
 import IconArrowLeft from './arrowLeft.svg';
 import IconDelete from './delete.svg';
 import IconEdit from './edit.svg';
+import IconManage from './manage.svg';
+import IconPesan from './pesan.svg';
+import IconBell from './bell.svg';
+import IconDel from './del.svg';
 
-export {
-    IconFeed,
-    IconSearch,
-    IconToolbar,
-    IconSafety,
-    IconProfil,
-    IconProfilActive,
-    IconSafetyActive,
-    IconSearchActive,
-    IconFeedActive,
-    IconDelete,
-    IconArrowLeft,
-    IconEdit,
-    IconAdd
-}
+export { IconFeed, IconSearch, IconToolbar, IconSafety, IconProfil, IconProfilActive, IconSafetyActive, IconSearchActive, IconFeedActive, IconDelete, IconArrowLeft, IconEdit, IconAdd, IconBell, IconManage, IconPesan, IconDel }
 

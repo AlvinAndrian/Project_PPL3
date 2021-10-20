@@ -1,4 +1,3 @@
-import BottomTabNavigator from "./BottomTabNavigator";
-import HeaderInformation from "./HeaderInformation";
+import BottomTabNavigator from './BottomTabNavigator';
 
-export { BottomTabNavigator, HeaderInformation };
+export { BottomTabNavigator };

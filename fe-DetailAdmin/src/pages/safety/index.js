@@ -1,18 +1,18 @@
 import React from 'react'
-import { StyleSheet, Text, View } from 'react-native'
-import { HeaderInformation } from '../../components'
-import List from '../../components/List'
-import SearchBar from '../../components/SearchBar'
+import { StyleSheet } from 'react-native'
+import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import { Create, Detail, ListTips, Edit } from '..'
+
+const RootStack = createNativeStackNavigator()
 
 const Safety = () => {
     return (
-        <View style={styles.page}>
-            <HeaderInformation />
-            <SearchBar />
-            <List />
-            <List />
-            <List />
-        </View >
+        <RootStack.Navigator style={styles.page}>
+            <RootStack.Screen name="ListTips" component={ListTips} options={{ headerShown: false }} />
+            <RootStack.Screen name="Detail" component={Detail} options={{ headerShown: false }} />
+            <RootStack.Screen name="Create" component={Create} options={{ headerShown: false }} />
+            <RootStack.Screen name="Edit" component={Edit} options={{ headerShown: false }} />
+        </RootStack.Navigator>
     )
 }
 

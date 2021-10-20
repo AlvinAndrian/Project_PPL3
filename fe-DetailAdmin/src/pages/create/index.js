@@ -1,14 +1,15 @@
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
+import HeaderCreate from '../../components/HeaderCreate'
 
-const Feed = () => {
+const Create = () => {
     return (
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-            <Text>Feed</Text>
+        <View>
+            <HeaderCreate />
         </View>
     )
 }
 
-export default Feed
+export default Create
 
 const styles = StyleSheet.create({})
