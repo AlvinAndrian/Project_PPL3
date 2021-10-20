@@ -1,7 +1,10 @@
 import React from 'react'
 import { StyleSheet } from 'react-native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import { Create, Detail, ListTips, Edit } from '..'
+import Create from '../create'
+import Edit from '../edit'
+import Detail from '../detail'
+import ListTips from '../listtips'
 
 const RootStack = createNativeStackNavigator()
 
