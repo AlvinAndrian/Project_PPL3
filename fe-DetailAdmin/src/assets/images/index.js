@@ -1,3 +1,3 @@
-import Background from './background.png';
+import Tumbnail from '../images/tumbnail.jpg';
 
-export { Background }
+export { Tumbnail }
