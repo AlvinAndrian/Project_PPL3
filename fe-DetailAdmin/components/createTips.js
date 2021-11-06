@@ -1,97 +1,107 @@
-import React, { Component } from 'react'
-import { StyleSheet, ScrollView, TouchableOpacity, Text, Alert } from 'react-native'
-import InputData from './inputData'
+import axios from 'axios'
+import React, { useEffect, useState } from 'react'
+import { Button, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { useNavigation } from '@react-navigation/native';
 
-export default class CreateTips extends Component {
-    constructor(props) {
-        super(props)
+const CreateTips = () => {
 
-        this.state = {
-            judul: '',
-            subjudul: '',
-            deskripsi: '',
-            keyword: '',
-            penulis: ''
+    const [name, setName] = useState("");
+    const [umur, setUmur] = useState("");
+    const [hobi, setHobi] = useState("");
+    const [users, setUsers] = useState([]);
+    const [button, setButton] = useState("Simpan");
+    const [selectedUser, setSelectedUser] = useState({});
+
+    useEffect(() => {
+        getData();
+    }, [])
+
+    const submit = () => {
+        const data = {
+            name,
+            umur,
+            hobi,
+        }
+        if (button === 'Simpan') {
+            axios.post('http://10.0.2.2:3004/users', data)
+                .then(res => {
+                    console.log('Respons : ', res)
+                    setName("");
+                    setUmur("");
+                    setHobi("");
+                    getData();
+                });
+        } else if (button === 'Update') {
+            axios.put(`http://10.0.2.2:3004/users/${selectedUser.id}`, data)
+                .then(res => {
+                    console.log('Update : ', res);
+                    setName("");
+                    setUmur("");
+                    setHobi("");
+                    getData();
+                    setButton("Simpan");
+                })
         }
     }
 
-    onChangeText = (namaState, value) => {
-        this.setState({
-            [namaState]: value
-        })
+    const getData = () => {
+        axios.get('http://10.0.2.2:3004/users')
+            .then(res => {
+                console.log('Respons : ', res);
+                setUsers(res.data);
+            })
     }
 
-    onSubmit = () => {
-        if (this.state.judul && this.state.subjudul && this.state.deskripsi && this.state.keyword && this.state.penulis) {
-            console.log("Masuk Submit");
-            console.log(this.state);
-        } else {
-            Alert.alert('ERROR', 'harap mengisi semua sebelum dikirimkan');
-        }
-
-    }
-
-    render() {
-        return (
-            <ScrollView>
-                <InputData
-                    label="Judul"
-                    placeholder="Masukan Judul"
-                    onChangeText={this.onChangeText}
-                    value={this.state.judul}
-                    namaState="judul"
-                />
-                <InputData
-                    label="Sub Judul"
-                    placeholder="Masukan Sub Judul"
-                    onChangeText={this.onChangeText}
-                    value={this.state.subjudul}
-                    namaState="subjudul"
-                />
-                <InputData
-                    label="Deskripsi"
-                    placeholder="Masukan Deskripsi"
-                    isTextArea={true}
-                    onChangeText={this.onChangeText}
-                    value={this.state.deskripsi}
-                    namaState="deskripsi"
-                />
-                <InputData
-                    label="Kata Kunci"
-                    placeholder="Masukan Kata Kunci"
-                    onChangeText={this.onChangeText}
-                    value={this.state.keyword}
-                    namaState="keyword"
-                />
-                <InputData
-                    label="Penulis"
-                    placeholder="Masukan Penulis"
-                    onChangeText={this.onChangeText}
-                    value={this.state.penulis}
-                    namaState="penulis"
-                />
-                <TouchableOpacity style={styles.tombol} onPress={() => this.onSubmit()}>
-                    <Text style={styles.texttombol}>Submit</Text>
-                </TouchableOpacity>
-            </ScrollView>
-        )
-    }
+    const navigation = useNavigation();
+    return (
+        <View style={styles.container}>
+            <Text style={styles.text}>Call API dengan JSON SERVER</Text>
+            <Text>Masukan Anggota Keluarga</Text>
+            <TextInput placeholder="Masukan Nama" style={styles.textInput} value={name} onChangeText={(value) => setName(value)} />
+            <TextInput placeholder="Masukan Umur" style={styles.textInput} value={umur} onChangeText={(value) => setUmur(value)} />
+            <TextInput placeholder="Masukan Hobi" style={styles.textInput} value={hobi} onChangeText={(value) => setHobi(value)} />
+            <Button title={button} onPress={submit} />
+            <View style={styles.line} />
+        </View>
+    )
 }
 
-const styles = StyleSheet.create({
-    tombol: {
-        backgroundColor: '#0C8EFF',
-        marginTop: 30,
-        marginBottom: 30,
-        marginHorizontal: 140,
-        paddingVertical: 10,
-        paddingHorizontal: 10,
-        alignItems: 'center',
-        borderRadius: 3,
+export default CreateTips
 
+const styles = StyleSheet.create({
+    container: {
+        padding: 30,
     },
-    texttombol: {
-        color: '#FFFFFF',
-        fontFamily: 'Poppins-Medium'
+    text: {
+        textAlign: 'center',
+        marginBottom: 10,
+    },
+    textInput: {
+        borderWidth: 2,
+        borderColor: 'black',
+        marginVertical: 10,
+        borderRadius: 10,
+        paddingHorizontal: 20,
+    },
+    line: {
+        height: 2,
+        backgroundColor: "black",
+        marginVertical: 10,
+    },
+    desc: {
+        color: "black",
+        fontSize: 15,
+    },
+    Item: {
+        flex: 1,
+    },
+    delete: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: 'red'
+    },
+    List: {
+        flexDirection: 'row',
+        marginBottom: 10,
     }
 })

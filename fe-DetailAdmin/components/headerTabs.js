@@ -46,7 +46,7 @@ const HeaderButton = (props) => {
             marginBottom: 11,
             paddingHorizontal: 10,
             paddingVertical: 10,
-            borderRadius: 3,
+            borderRadius: 5,
             fontFamily: 'Poppins-Light',
         }}
             onPress={() => navigation.navigate(props.nav) || props.setActiveTab(props.text)}

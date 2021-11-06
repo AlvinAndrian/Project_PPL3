@@ -1,0 +1,22 @@
+{
+  "users": [
+    {
+      "name": "Alvin Andrian Rizki",
+      "umur": "20 Tahun",
+      "hobi": "Menggambar",
+      "id": 1
+    },
+    {
+      "name": "Cuanmi",
+      "umur": "20 Tahun",
+      "hobi": "Masak",
+      "id": 2
+    },
+    {
+      "name": "Masiro",
+      "umur": "18 Tahun",
+      "hobi": "manga",
+      "id": 3
+    }
+  ]
+}

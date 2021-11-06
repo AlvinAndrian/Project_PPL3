@@ -6,6 +6,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import CreateTips from '../components/createTips'
 import CreateVideo from '../components/createVideo'
 import CreateDocs from '../components/createDocs'
+import Item from '../components/Item'
 
 const RootStack = createNativeStackNavigator()
 
@@ -29,6 +30,7 @@ const Create = () => {
                 <RootStack.Screen name="CreateTips" component={CreateTips} options={{ headerShown: false }} />
                 <RootStack.Screen name="CreateVideo" component={CreateVideo} options={{ headerShown: false }} />
                 <RootStack.Screen name="CreateDocs" component={CreateDocs} options={{ headerShown: false }} />
+                <RootStack.Screen name="Item" component={Item} options={{ headerShown: false }} />
             </RootStack.Navigator>
         </View>
 
