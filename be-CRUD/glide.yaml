@@ -1,0 +1,3 @@
+package: github.com/wuryscamp/go-postgres-tutorial
+import:
+- package: github.com/lib/pq
