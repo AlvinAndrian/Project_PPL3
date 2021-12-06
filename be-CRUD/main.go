@@ -2,9 +2,11 @@ package main
 
 import (
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
+	"time"
 
 	_ "github.com/lib/pq"
 )
@@ -16,22 +18,22 @@ func main() {
 }
 
 type TBL_VIDEO struct {
-	ID          int			`json:"id"`
-	Headings    string		`json:"headings"`
-	Desc        string		`json:"desc"`
-	Link        string		`json:"link"`
-	CreatedDate time.Time	`json:"createdate"`
-	CreatedBy   string		`json:"createby"`
-	UpdateDate  time.Time	`json:"updatedate"`
-	UpdateBy    string		`json:"updateby"`
+	ID          int       `json:"id"`
+	Headings    string    `json:"headings"`
+	Desc        string    `json:"desc"`
+	Link        string    `json:"link"`
+	CreatedDate time.Time `json:"createdate"`
+	CreatedBy   string    `json:"createby"`
+	UpdateDate  time.Time `json:"updatedate"`
+	UpdateBy    string    `json:"updateby"`
 }
 
 const (
-	host	= "103.157.96.115"
-	port	= "5432"
-	user	= "downhill"
-	password= "whirlpool"
-	dbname	= "db_downhill"
+	host     = "103.157.96.115"
+	port     = "5432"
+	user     = "downhill"
+	password = "whirlpool"
+	dbname   = "db_downhill"
 )
 
 func OpenConnection() *sql.DB {
@@ -61,15 +63,15 @@ func GETHandler(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 
-	var videos []Video 
+	var videos []TBL_VIDEO
 
 	for rows.Next() {
-		var video Video //deklarasi var video bertipe struct
+		var video TBL_VIDEO //deklarasi var video bertipe struct TBL_VIDEO
 		rows.Scan(&video.ID, &video.Headings, &video.Desc, &video.Link, &video.CreatedDate, &video.CreatedBy, &video.UpdateDate, &video.UpdateBy)
-		video = append(videos, video)
+		videos = append(videos, video)
 	}
 
-	peopleBytes, _ := json.MarshalIndent(videos, "", "\t")
+	videosBytes, _ := json.MarshalIndent(videos, "", "\t")
 
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(videosBytes)
