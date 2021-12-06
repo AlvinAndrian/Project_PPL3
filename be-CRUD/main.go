@@ -1,10 +1,100 @@
-package main 
+package main
 
-import {
+import (
+	"database/sql"
 	"fmt"
+	"log"
+	"net/http"
+
+	_ "github.com/lib/pq"
+)
+
+func main() {
+	http.HandleFunc("/", GETHandler)
+	http.HandleFunc("/create data", POSTHandler)
+	log.fatal(http.ListenAndServe(":8080", nil))
 }
 
-func main(){
-	fmt.Println("Halaman Guidelines")
-	
+type TBL_VIDEO struct {
+	ID          int			`json:"id"`
+	Headings    string		`json:"headings"`
+	Desc        string		`json:"desc"`
+	Link        string		`json:"link"`
+	CreatedDate time.Time	`json:"createdate"`
+	CreatedBy   string		`json:"createby"`
+	UpdateDate  time.Time	`json:"updatedate"`
+	UpdateBy    string		`json:"updateby"`
+}
+
+const (
+	host	= "103.157.96.115"
+	port	= "5432"
+	user	= "downhill"
+	password= "whirlpool"
+	dbname	= "db_downhill"
+)
+
+func OpenConnection() *sql.DB {
+	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
+		"password=%s dbname=%s sslmode=disable",
+		host, port, user, password, dbname)
+
+	db, err := sql.Open("postgres", psqlInfo)
+	if err != nil {
+		panic(err)
+	}
+
+	err = db.Ping()
+	if err != nil {
+		panic(err)
+	}
+
+	return db
+}
+
+//penanganan
+func GETHandler(w http.ResponseWriter, r *http.Request) {
+	db := OpenConnection()
+
+	rows, err := db.Query("SELECT * FROM TBL_VIDEO")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var videos []Video 
+
+	for rows.Next() {
+		var video Video //deklarasi var video bertipe struct
+		rows.Scan(&video.ID, &video.Headings, &video.Desc, &video.Link, &video.CreatedDate, &video.CreatedBy, &video.UpdateDate, &video.UpdateBy)
+		video = append(videos, video)
+	}
+
+	peopleBytes, _ := json.MarshalIndent(videos, "", "\t")
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(videosBytes)
+
+	defer rows.Close()
+	defer db.Close()
+}
+
+func POSTHandler(w http.ResponseWriter, r *http.Request) {
+	db := OpenConnection()
+
+	var p TBL_VIDEO
+	err := json.NewDecoder(r.Body).Decode(&p)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	sqlStatement := `INSERT INTO tbl_video (id,headings,desc,link,createdate,createby,updatedate,updateby) VALUES ($1, $2)`
+	_, err = db.Exec(sqlStatement, p.ID, p.Headings, p.Desc, p.Link, p.CreatedDate, p.CreatedBy, p.UpdateDate, p.UpdateBy)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		panic(err)
+	}
+
+	w.WriteHeader(http.StatusOK)
+	defer db.Close()
 }
