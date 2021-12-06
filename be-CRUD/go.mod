@@ -1,4 +1,4 @@
-module github.com/wanda/Guidelines
+module github.com/wanda/Guidelines  
 
 go 1.17
 

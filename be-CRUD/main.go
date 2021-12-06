@@ -14,7 +14,7 @@ import (
 func main() {
 	http.HandleFunc("/", GETHandler)
 	http.HandleFunc("/create data", POSTHandler)
-	log.fatal(http.ListenAndServe(":8080", nil))
+	log.Fatal(http.ListenAndServe(":8080", nil))
 }
 
 type TBL_VIDEO struct {
@@ -37,9 +37,9 @@ const (
 )
 
 func OpenConnection() *sql.DB {
-	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
+	psqlInfo := fmt.Sprintf("host=%s port=%s user=%s "+
 		"password=%s dbname=%s sslmode=disable",
-		host, port, user, password, dbname)
+		host, port, user, password, dbname)  //ada error disini karena sebelumnya saya set port %d harusnya %s karna string
 
 	db, err := sql.Open("postgres", psqlInfo)
 	if err != nil {
