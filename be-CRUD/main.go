@@ -13,7 +13,7 @@ import (
 
 func main() {
 	http.HandleFunc("/", GETHandler)
-	http.HandleFunc("/create data", POSTHandler)
+	http.HandleFunc("/create", POSTHandler)
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
 
@@ -39,7 +39,7 @@ const (
 func OpenConnection() *sql.DB {
 	psqlInfo := fmt.Sprintf("host=%s port=%s user=%s "+
 		"password=%s dbname=%s sslmode=disable",
-		host, port, user, password, dbname)  //ada error disini karena sebelumnya saya set port %d harusnya %s karna string
+		host, port, user, password, dbname) //ada error disini karena sebelumnya saya set port %d harusnya %s karna string
 
 	db, err := sql.Open("postgres", psqlInfo)
 	if err != nil {
@@ -50,7 +50,6 @@ func OpenConnection() *sql.DB {
 	if err != nil {
 		panic(err)
 	}
-
 	return db
 }
 
@@ -90,7 +89,7 @@ func POSTHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	sqlStatement := `INSERT INTO tbl_video (id,headings,desc,link,createdate,createby,updatedate,updateby) VALUES ($1, $2)`
+	sqlStatement := `INSERT INTO tbl_video (id,headings,desc,link,createdate,createby,updatedate,updateby) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`
 	_, err = db.Exec(sqlStatement, p.ID, p.Headings, p.Desc, p.Link, p.CreatedDate, p.CreatedBy, p.UpdateDate, p.UpdateBy)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
