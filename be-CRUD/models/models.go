@@ -14,16 +14,16 @@ import (
 
 // Video schema dari tbl_video
 // jika return datanya ada yg null, pake NullString, contoh:
-// Penulis       config.NullString `json:"penulis"`
+// Penulis config.NullString `json:"penulis"`
 // createdDate dan UpdateDate ga dibuat struct tapi langsung current_timestamp di statement query
 
 type Video struct {
-	ID        int64  `json:"id"`
-	Headings  string `json:"headings"`
-	Desc      string `json:"desc"`
-	Link      string `json:"link"`
-	CreatedBy string `json:"createdby"`
-	UpdatedBy string `json:"updatedby"`
+	ID        int64  `json:"video_id"`
+	Headings  string `json:"video_headings"`
+	Desc      string `json:"video_desc"`
+	Link      string `json:"video_link"`
+	CreatedBy string `json:"video_created_by"`
+	UpdatedBy string `json:"video_update_by"`
 }
 
 func TambahVideo(video Video) int64 {
@@ -36,22 +36,22 @@ func TambahVideo(video Video) int64 {
 
 	// buat insert query
 	// mengembalikan nilai id akan mengembalikan id dari video yang dimasukkan ke db
-	sqlStatement := `INSERT INTO tbl_video (headings, desc, link, createdby, updatedby) VALUES ($1, $2, $3, $4, $5) RETURNING id`
+	sqlStatement := `INSERT INTO tbl_video (video_headings, video_desc, video_link, video_created_by, video_update_by) VALUES ($1, $2, $3, $4, $5) RETURNING id`
 
 	// id yang dimasukkan akan disimpan di id ini
-	var id int64
+	var video_id int64
 
 	// Scan function akan menyimpan insert id didalam id id
-	err := db.QueryRow(sqlStatement, video.Headings, video.Desc, video.Link, video.CreatedBy, video.UpdatedBy).Scan(&id)
+	err := db.QueryRow(sqlStatement, video.Headings, video.Desc, video.Link, video.CreatedBy, video.UpdatedBy).Scan(&video_id)
 
 	if err != nil {
 		log.Fatalf("Tidak Bisa mengeksekusi query. %v", err)
 	}
 
-	fmt.Printf("Insert data single record %v", id)
+	fmt.Printf("Insert data single record %v", video_id)
 
 	// return insert id
-	return id
+	return video_id
 }
 
 // ambil satu video

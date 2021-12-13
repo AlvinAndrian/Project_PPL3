@@ -43,7 +43,7 @@ func TmbhVideo(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// panggil modelsnya lalu insert video
-	insertID := models.TambahVideo()(video)
+	insertID := models.TambahVideo(video)
 
 	// format response objectnya
 	res := response{
@@ -103,7 +103,7 @@ func AmbilSemuaVideo(w http.ResponseWriter, r *http.Request) {
 
 func UpdateVideo(w http.ResponseWriter, r *http.Request) {
 
-	// kita ambil request parameter idnya
+	// ambil request parameter idnya
 	params := mux.Vars(r)
 
 	// konversikan ke int yang sebelumnya adalah string
@@ -141,7 +141,7 @@ func UpdateVideo(w http.ResponseWriter, r *http.Request) {
 
 func HapusVideo(w http.ResponseWriter, r *http.Request) {
 
-	// kita ambil request parameter idnya
+	// ambil request parameter idnya
 	params := mux.Vars(r)
 
 	// konversikan ke int yang sebelumnya adalah string
