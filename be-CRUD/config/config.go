@@ -48,8 +48,7 @@ func CreateConnection() *sql.DB {
 }
 
 
-// fungsi untuk menampung jika struct / data bertipe NULL 
-// maka dia akan mengisikan data(string) kosong.
+// fungsi untuk menampung jika struct / data bertipe NULL maka dia akan mengisikan data(string) kosong.
 type NullString struct {
 	sql.NullString
 }

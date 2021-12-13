@@ -1,6 +1,6 @@
 package controller
 
-// terdapat file buku.go yang memiliki fungsi sebagai wadah komunikasi awal
+// terdapat file video.go yang memiliki fungsi sebagai wadah komunikasi awal
 // sebelum terjadinya transaksi data ke db.
 
 import (
@@ -11,7 +11,7 @@ import (
 	"log"
 	"net/http" // digunakan untuk mengakses objek permintaan dan respons dari api
 
-	"be-CRUD/models" //models package dimana Buku didefinisikan
+	"be-CRUD/models" //models package dimana Video didefinisikan
 
 	"github.com/gorilla/mux" // digunakan untuk mendapatkan parameter dari router
 	_ "github.com/lib/pq"    // postgres golang driver
@@ -33,10 +33,10 @@ func TmbhVideo(w http.ResponseWriter, r *http.Request) {
 
 	// create an empty user of type models.User
 	// buat empty video dengan tipe models.Video
-	var buku models.Video
+	var video models.Video
 
 	// decode data json request ke video
-	err := json.NewDecoder(r.Body).Decode(&buku)
+	err := json.NewDecoder(r.Body).Decode(&video)
 
 	if err != nil {
 		log.Fatalf("Tidak bisa mendecode dari request body.  %v", err)
@@ -71,7 +71,7 @@ func AmbilVideo(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// memanggil models ambilsatuvideo dengan parameter id yg nantinya akan mengambil single data
-	buku, err := models.AmbilSatuVideo(int64(id))
+	video, err := models.AmbilSatuVideo(int64(id))
 
 	if err != nil {
 		log.Fatalf("Tidak bisa mengambil data video. %v", err)
@@ -81,12 +81,12 @@ func AmbilVideo(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(video)
 }
 
-// Ambil semua data buku
+// Ambil semua data video
 func AmbilSemuaVideo(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
-	// memanggil models AmbilSemuaBuku
-	bukus, err := models.AmbilSemuaVideo()
+	// memanggil models AmbilSemuaVideo
+	videos, err := models.AmbilSemuaVideo()
 
 	if err != nil {
 		log.Fatalf("Tidak bisa mengambil data. %v", err)
@@ -101,7 +101,7 @@ func AmbilSemuaVideo(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(response)
 }
 
-func UpdateBuku(w http.ResponseWriter, r *http.Request) {
+func UpdateVideo(w http.ResponseWriter, r *http.Request) {
 
 	// kita ambil request parameter idnya
 	params := mux.Vars(r)
@@ -124,7 +124,7 @@ func UpdateBuku(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// panggil updatevideo untuk mengupdate data
-	updatedRows := models.UpdateBuku(int64(id), video)
+	updatedRows := models.UpdateVideo(int64(id), video)
 
 	// ini adalah format message berupa string
 	msg := fmt.Sprintf("Video telah berhasil diupdate. Jumlah yang diupdate %v rows/record", updatedRows)
