@@ -1,5 +1,6 @@
 package models
-// terdapat file models.go yang memiliki fungsi sebagai komunikasi ke db 
+
+// terdapat file models.go yang memiliki fungsi sebagai komunikasi ke db
 // yang biasanya terjadi operasi transaksi CRUD data.
 
 import (
@@ -17,12 +18,12 @@ import (
 // createdDate dan UpdateDate ga dibuat struct tapi langsung current_timestamp di statement query
 
 type Video struct {
-	ID            int64  		`json:"id"`
-	Headings   	  string 		`json:"headings"`
-	Desc          string 		`json:"desc"`
-	Link          string 		`json:"link"`
-	CreatedBy     string 		`json:"createdby"`
-	UpdatedBy     string 		`json:"updatedby"`
+	ID        int64  `json:"id"`
+	Headings  string `json:"headings"`
+	Desc      string `json:"desc"`
+	Link      string `json:"link"`
+	CreatedBy string `json:"createdby"`
+	UpdatedBy string `json:"updatedby"`
 }
 
 func TambahVideo(video Video) int64 {
@@ -53,8 +54,8 @@ func TambahVideo(video Video) int64 {
 	return id
 }
 
-// ambil satu buku
-func AmbilSemuaBuku() ([]Video, error) {
+// ambil satu video
+func AmbilSemuaVideo() ([]Video, error) {
 	// mengkoneksikan ke db postgres
 	db := config.CreateConnection()
 
