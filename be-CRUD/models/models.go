@@ -1,7 +1,6 @@
 package models
 
-// terdapat file models.go yang memiliki fungsi sebagai komunikasi ke db
-// yang biasanya terjadi operasi transaksi CRUD data.
+// terdapat file models.go yang memiliki fungsi sebagai komunikasi ke db (terjadi operasi transaksi CRUD data)
 
 import (
 	"be-CRUD/config"
@@ -13,7 +12,7 @@ import (
 	_ "github.com/lib/pq" // postgres golang driver
 )
 
-// jika return datanya ada yg null, pake NullString, contoh:
+// jika return datanya ada yg null, pakai NullString, contoh:
 // Penulis config.NullString `json:"penulis"`
 
 type Video struct {
@@ -37,13 +36,10 @@ func TambahVideo(video Video) int64 {
 	defer db.Close()
 
 	// buat insert query
-	// mengembalikan nilai id akan mengembalikan id dari video yang dimasukkan ke db
 	sqlStatement := `INSERT INTO tbl_video (video_id, video_headings, video_desc, video_link, video_created_date, video_created_by, video_update_date, video_update_by) VALUES ($1, $2, $3, $4, CURRENT_DATE, $5, CURRENT_DATE, $6) RETURNING video_id`
 
-	// video_id yang dimasukkan akan disimpan di video_id ini
 	var video_id int64
 
-	// Scan function akan menyimpan insert id didalam id id
 	err := db.QueryRow(sqlStatement, video.ID, video.Headings, video.Desc, video.Link, video.CreatedBy, video.UpdateBy).Scan(&video_id)
 
 	if err != nil {
@@ -52,7 +48,7 @@ func TambahVideo(video Video) int64 {
 
 	fmt.Printf("Insert data single record %v", video_id)
 
-	// return insert id
+	// return insert video_id
 	return video_id
 }
 
@@ -61,12 +57,12 @@ func AmbilSemuaVideo() ([]Video, error) {
 	// mengkoneksikan ke db postgres
 	db := config.CreateConnection()
 
-	// kita tutup koneksinya di akhir proses
+	// tutup koneksinya di akhir proses
 	defer db.Close()
 
 	var videos []Video
 
-	// kita buat select query
+	// buat select query
 	sqlStatement := `SELECT * FROM tbl_video`
 
 	// mengeksekusi sql query
@@ -76,14 +72,14 @@ func AmbilSemuaVideo() ([]Video, error) {
 		log.Fatalf("tidak bisa mengeksekusi query. %v", err)
 	}
 
-	// kita tutup eksekusi proses sql qeurynya
+	// tutup eksekusi proses sql query
 	defer rows.Close()
 
-	// kita iterasi mengambil datanya
+	// iterasi mengambil datanya
 	for rows.Next() {
 		var video Video
 
-		// kita ambil datanya dan unmarshal ke structnya
+		// ambil data video dan unmarshal ke structnya
 		err = rows.Scan(&video.ID, &video.ArtikelID, &video.Headings, &video.Desc, &video.Link, &video.CreatedDate, &video.CreatedBy, &video.UpdateDate, &video.UpdateBy)
 
 		if err != nil {
@@ -104,7 +100,7 @@ func AmbilSatuVideo(id int64) (Video, error) {
 	// mengkoneksikan ke db postgres
 	db := config.CreateConnection()
 
-	// kita tutup koneksinya di akhir proses
+	// tutup koneksinya di akhir proses
 	defer db.Close()
 
 	var video Video
@@ -165,11 +161,11 @@ func HapusVideo(id int64) int64 {
 	// mengkoneksikan ke db postgres
 	db := config.CreateConnection()
 
-	// kita tutup koneksinya di akhir proses
+	// tutup koneksinya di akhir proses
 	defer db.Close()
 
 	// buat sql query
-	sqlStatement := `DELETE FROM tbl_video WHERE id=$1`
+	sqlStatement := `DELETE FROM tbl_video WHERE video_id=$1`
 
 	// eksekusi sql statement
 	res, err := db.Exec(sqlStatement, id)
