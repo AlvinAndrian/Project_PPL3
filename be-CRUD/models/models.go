@@ -8,22 +8,24 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"time"
 
 	_ "github.com/lib/pq" // postgres golang driver
 )
 
-// Video schema dari tbl_video
 // jika return datanya ada yg null, pake NullString, contoh:
 // Penulis config.NullString `json:"penulis"`
-// createdDate dan UpdateDate ga dibuat struct tapi langsung current_timestamp di statement query
 
 type Video struct {
-	ID        int64  `json:"video_id"`
-	Headings  string `json:"video_headings"`
-	Desc      string `json:"video_desc"`
-	Link      string `json:"video_link"`
-	CreatedBy string `json:"video_created_by"`
-	UpdateBy  string `json:"video_update_by"`
+	ID          int64             `json:"video_id"`
+	ArtikelID   config.NullString `json:"artikel_id2"`
+	Headings    string            `json:"video_headings"`
+	Desc        string            `json:"video_desc"`
+	Link        string            `json:"video_link"`
+	CreatedDate time.Time         `json:"video_created_date"`
+	CreatedBy   string            `json:"video_created_by"`
+	UpdateDate  time.Time         `json:"video_update_date"`
+	UpdateBy    string            `json:"video_update_by"`
 }
 
 func TambahVideo(video Video) int64 {
@@ -36,13 +38,13 @@ func TambahVideo(video Video) int64 {
 
 	// buat insert query
 	// mengembalikan nilai id akan mengembalikan id dari video yang dimasukkan ke db
-	sqlStatement := `INSERT INTO tbl_video (video_headings, video_desc, video_link, video_created_date, video_created_by, video_update_date, video_update_by) VALUES ($1, $2, $3, CURRENT_DATE, $4, CURRENT_DATE, $5) RETURNING video_id`
+	sqlStatement := `INSERT INTO tbl_video (artikel_id2, video_headings, video_desc, video_link, video_created_date, video_created_by, video_update_date, video_update_by) VALUES ($1, $2, $3, $4, $5 CURRENT_DATE, $6, CURRENT_DATE, $7) RETURNING video_id`
 
-	// id yang dimasukkan akan disimpan di id ini
+	// id yang dimasukkan akan disimpan di video_id ini
 	var video_id int64
 
 	// Scan function akan menyimpan insert id didalam id id
-	err := db.QueryRow(sqlStatement, video.Headings, video.Desc, video.Link, video.CreatedBy, video.UpdateBy).Scan(&video_id)
+	err := db.QueryRow(sqlStatement, video.ArtikelID, video.Headings, video.Desc, video.Link, video.CreatedDate, video.CreatedBy, video.UpdateDate, video.UpdateBy).Scan(&video_id)
 
 	if err != nil {
 		log.Fatalf("Tidak Bisa mengeksekusi query. %v", err)
@@ -82,7 +84,7 @@ func AmbilSemuaVideo() ([]Video, error) {
 		var video Video
 
 		// kita ambil datanya dan unmarshal ke structnya
-		err = rows.Scan(&video.ID, &video.Headings, &video.Desc, &video.Link, &video.CreatedBy, &video.UpdateBy)
+		err = rows.Scan(&video.ID, &video.ArtikelID, &video.Headings, &video.Desc, &video.Link, &video.CreatedDate, &video.CreatedBy, &video.UpdateDate, &video.UpdateBy)
 
 		if err != nil {
 			log.Fatalf("tidak bisa mengambil data. %v", err)
