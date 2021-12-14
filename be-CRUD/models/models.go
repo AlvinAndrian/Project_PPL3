@@ -38,13 +38,13 @@ func TambahVideo(video Video) int64 {
 
 	// buat insert query
 	// mengembalikan nilai id akan mengembalikan id dari video yang dimasukkan ke db
-	sqlStatement := `INSERT INTO tbl_video (artikel_id2, video_headings, video_desc, video_link, video_created_date, video_created_by, video_update_date, video_update_by) VALUES ($1, $2, $3, $4, $5 CURRENT_DATE, $6, CURRENT_DATE, $7) RETURNING video_id`
+	sqlStatement := `INSERT INTO tbl_video (video_id, video_headings, video_desc, video_link, video_created_date, video_created_by, video_update_date, video_update_by) VALUES ($1, $2, $3, $4, CURRENT_DATE, $5, CURRENT_DATE, $6) RETURNING video_id`
 
-	// id yang dimasukkan akan disimpan di video_id ini
+	// video_id yang dimasukkan akan disimpan di video_id ini
 	var video_id int64
 
 	// Scan function akan menyimpan insert id didalam id id
-	err := db.QueryRow(sqlStatement, video.ArtikelID, video.Headings, video.Desc, video.Link, video.CreatedDate, video.CreatedBy, video.UpdateDate, video.UpdateBy).Scan(&video_id)
+	err := db.QueryRow(sqlStatement, video.ID, video.Headings, video.Desc, video.Link, video.CreatedBy, video.UpdateBy).Scan(&video_id)
 
 	if err != nil {
 		log.Fatalf("Tidak Bisa mengeksekusi query. %v", err)
