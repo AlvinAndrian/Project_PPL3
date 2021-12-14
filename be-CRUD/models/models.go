@@ -23,7 +23,7 @@ type Video struct {
 	Desc      string `json:"video_desc"`
 	Link      string `json:"video_link"`
 	CreatedBy string `json:"video_created_by"`
-	UpdatedBy string `json:"video_update_by"`
+	UpdateBy  string `json:"video_update_by"`
 }
 
 func TambahVideo(video Video) int64 {
@@ -36,13 +36,13 @@ func TambahVideo(video Video) int64 {
 
 	// buat insert query
 	// mengembalikan nilai id akan mengembalikan id dari video yang dimasukkan ke db
-	sqlStatement := `INSERT INTO tbl_video (video_headings, video_desc, video_link, video_created_by, video_update_by) VALUES ($1, $2, $3, $4, $5) RETURNING id`
+	sqlStatement := `INSERT INTO tbl_video (video_headings, video_desc, video_link, video_created_date, video_created_by, video_update_date, video_update_by) VALUES ($1, $2, $3, CURRENT_DATE, $4, CURRENT_DATE, $5) RETURNING video_id`
 
 	// id yang dimasukkan akan disimpan di id ini
 	var video_id int64
 
 	// Scan function akan menyimpan insert id didalam id id
-	err := db.QueryRow(sqlStatement, video.Headings, video.Desc, video.Link, video.CreatedBy, video.UpdatedBy).Scan(&video_id)
+	err := db.QueryRow(sqlStatement, video.Headings, video.Desc, video.Link, video.CreatedBy, video.UpdateBy).Scan(&video_id)
 
 	if err != nil {
 		log.Fatalf("Tidak Bisa mengeksekusi query. %v", err)
@@ -82,7 +82,7 @@ func AmbilSemuaVideo() ([]Video, error) {
 		var video Video
 
 		// kita ambil datanya dan unmarshal ke structnya
-		err = rows.Scan(&video.ID, &video.Headings, &video.Desc, &video.Link, &video.CreatedBy, &video.UpdatedBy)
+		err = rows.Scan(&video.ID, &video.Headings, &video.Desc, &video.Link, &video.CreatedBy, &video.UpdateBy)
 
 		if err != nil {
 			log.Fatalf("tidak bisa mengambil data. %v", err)
@@ -113,7 +113,7 @@ func AmbilSatuVideo(id int64) (Video, error) {
 	// eksekusi sql statement
 	row := db.QueryRow(sqlStatement, id)
 
-	err := row.Scan(&video.ID, &video.Headings, &video.Desc, &video.Link, &video.CreatedBy, &video.UpdatedBy)
+	err := row.Scan(&video.ID, &video.Headings, &video.Desc, &video.Link, &video.CreatedBy, &video.UpdateBy)
 
 	switch err {
 	case sql.ErrNoRows:
@@ -129,7 +129,7 @@ func AmbilSatuVideo(id int64) (Video, error) {
 }
 
 // update user in the DB
-func UpdateVideo(id int64, video Video) int64 {
+func UpdateVideo(video_id int64, video Video) int64 {
 
 	db := config.CreateConnection()
 
@@ -139,7 +139,7 @@ func UpdateVideo(id int64, video Video) int64 {
 	sqlStatement := `UPDATE tbl_video SET headings=$2, desc=$3, link=$4, createdby=$5, updatedby=$6 WHERE id=$1`
 
 	// eksekusi sql statement
-	res, err := db.Exec(sqlStatement, id, video.Headings, video.Desc, video.Link, video.CreatedBy, video.UpdatedBy)
+	res, err := db.Exec(sqlStatement, video.ID, video.Headings, video.Desc, video.Link, video.CreatedBy, video.UpdateBy)
 
 	if err != nil {
 		log.Fatalf("Tidak bisa mengeksekusi query. %v", err)
