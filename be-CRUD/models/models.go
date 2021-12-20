@@ -134,7 +134,7 @@ func UpdateVideo(video_id int64, video Video) int64 {
 	defer db.Close()
 
 	// sql query create
-	sqlStatement := `UPDATE tbl_video SET headings=$2, desc=$3, link=$4, createdby=$5, updatedby=$6 WHERE id=$1`
+	sqlStatement := `UPDATE tbl_video SET video_headings=$2, video_desc=$3, video_link=$4, video_created_by=$5, video_update_by=$6 WHERE video_id=$1`
 
 	// eksekusi sql statement
 	res, err := db.Exec(sqlStatement, video.ID, video.Headings, video.Desc, video.Link, video.CreatedBy, video.UpdateBy)
