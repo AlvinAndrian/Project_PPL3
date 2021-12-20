@@ -1,7 +1,6 @@
 package controller
 
-// terdapat file video.go yang memiliki fungsi sebagai wadah komunikasi awal
-// sebelum terjadinya transaksi data ke db.
+// terdapat file video.go yang memiliki fungsi sebagai wadah komunikasi awal sebelum terjadinya transaksi data ke db
 
 import (
 	"encoding/json" // package untuk enkode dan mendekode json menjadi struct dan sebaliknya
