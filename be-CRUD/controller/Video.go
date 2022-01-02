@@ -1,4 +1,5 @@
 package controller
+
 // terdapat file video.go yang memiliki fungsi sebagai wadah komunikasi awal sebelum terjadinya transaksi data ke db
 
 import (
@@ -8,7 +9,7 @@ import (
 
 	"log"
 	"net/http" // digunakan untuk mengakses objek permintaan dan respons dari api
-
+	
 	"be-CRUD/models" //models package dimana Video didefinisikan
 
 	"github.com/gorilla/mux" // digunakan untuk mendapatkan parameter dari router

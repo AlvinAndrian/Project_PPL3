@@ -12,6 +12,7 @@ import (
 	_ "github.com/lib/pq" // postgres golang driver
 )
 
+
 // jika return datanya ada yg null, pakai NullString, contoh:
 // Penulis config.NullString `json:"penulis"`
 
@@ -106,12 +107,12 @@ func AmbilSatuVideo(id int64) (Video, error) {
 	var video Video
 
 	// buat sql query
-	sqlStatement := `SELECT * FROM tbl_video WHERE video_id=$1`
+	sqlStatement := `SELECT * FROM tbl_video WHERE id=$1`
 
 	// eksekusi sql statement
 	row := db.QueryRow(sqlStatement, id)
 
-	err := row.Scan(&video.ID, &video.ArtikelID, &video.Headings, &video.Desc, &video.Link, &video.CreatedDate, &video.CreatedBy, &video.UpdateDate, &video.UpdateBy)
+	err := row.Scan(&video.ID, &video.Headings, &video.Desc, &video.Link, &video.CreatedBy, &video.UpdateBy)
 
 	switch err {
 	case sql.ErrNoRows:
