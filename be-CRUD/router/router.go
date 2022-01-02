@@ -13,6 +13,7 @@ func Router() *mux.Router {
 
 	router := mux.NewRouter()
 
+	// endpoint
 	router.HandleFunc("/api/video", controller.AmbilSemuaVideo).Methods("GET", "OPTIONS")
 	router.HandleFunc("/api/video/{id}", controller.AmbilVideo).Methods("GET", "OPTIONS")
 	router.HandleFunc("/api/video", controller.TmbhVideo).Methods("POST", "OPTIONS")

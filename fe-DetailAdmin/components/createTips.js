@@ -17,7 +17,7 @@ const CreateTips = () => {
             keyword,
             penulis,
         }
-        axios.post('http://10.0.2.2:3004/users', data)
+        axios.post('https://42a5-222-124-112-205.ngrok.io/api/video', data)
             .then(res => {
                 console.log('Respons : ', res)
                 setJudul("");
