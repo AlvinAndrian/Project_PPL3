@@ -28,6 +28,7 @@ type Video struct {
 	Keyword    string            `json:"video_keyword"`
 }
 
+// fungsi untuk create single video
 func TambahVideo(video Video) int64 {
 
 	// mengkoneksikan ke db postgres
@@ -53,7 +54,7 @@ func TambahVideo(video Video) int64 {
 	return video_id
 }
 
-// ambil satu video
+// fungsi untuk get all video
 func AmbilSemuaVideo() ([]Video, error) {
 	// mengkoneksikan ke db postgres
 	db := config.CreateConnection()
@@ -96,7 +97,7 @@ func AmbilSemuaVideo() ([]Video, error) {
 	return videos, err
 }
 
-// mengambil satu video
+// fungsi untuk get single video
 func AmbilSatuVideo(id int64) (Video, error) {
 	// mengkoneksikan ke db postgres
 	db := config.CreateConnection()
@@ -107,12 +108,12 @@ func AmbilSatuVideo(id int64) (Video, error) {
 	var video Video
 
 	// buat sql query
-	sqlStatement := `SELECT * FROM video WHERE id=$1`
+	sqlStatement := `SELECT * FROM video WHERE video_id=$1`
 
 	// eksekusi sql statement
 	row := db.QueryRow(sqlStatement, id)
 
-	err := row.Scan(&video.ID, &video.Headings, &video.Desc, &video.Link, &video.CreateBy, &video.UpdateBy, &video.Keyword)
+	err := row.Scan(&video.ID, &video.ArtikelID, &video.Headings, &video.Desc, &video.Link, &video.CreateDate, &video.CreateBy, &video.UpdateDate, &video.UpdateBy, &video.Keyword)
 
 	switch err {
 	case sql.ErrNoRows:
@@ -127,7 +128,7 @@ func AmbilSatuVideo(id int64) (Video, error) {
 	return video, err
 }
 
-// update user in the DB
+// fungsi untuk update single video
 func UpdateVideo(video_id int64, video Video) int64 {
 
 	db := config.CreateConnection()
@@ -157,6 +158,7 @@ func UpdateVideo(video_id int64, video Video) int64 {
 	return rowsAffected
 }
 
+// fungsi untuk delete single video
 func HapusVideo(id int64) int64 {
 
 	// mengkoneksikan ke db postgres
