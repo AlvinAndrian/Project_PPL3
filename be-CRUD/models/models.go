@@ -12,20 +12,20 @@ import (
 	_ "github.com/lib/pq" // postgres golang driver
 )
 
-
 // jika return datanya ada yg null, pakai NullString, contoh:
 // Penulis config.NullString `json:"penulis"`
 
 type Video struct {
-	ID          int64             `json:"video_id"`
-	ArtikelID   config.NullString `json:"artikel_id2"`
-	Headings    string            `json:"video_headings"`
-	Desc        string            `json:"video_desc"`
-	Link        string            `json:"video_link"`
-	CreatedDate time.Time         `json:"video_created_date"`
-	CreatedBy   string            `json:"video_created_by"`
-	UpdateDate  time.Time         `json:"video_update_date"`
-	UpdateBy    string            `json:"video_update_by"`
+	ID         int64             `json:"video_id"`
+	ArtikelID  config.NullString `json:"artikel_id"`
+	Headings   string            `json:"video_headings"`
+	Desc       string            `json:"video_desc"`
+	Link       string            `json:"video_link"`
+	CreateDate time.Time         `json:"video_create_date"`
+	CreateBy   string            `json:"video_create_by"`
+	UpdateDate time.Time         `json:"video_update_date"`
+	UpdateBy   config.NullString `json:"video_update_by"`
+	Keyword    string            `json:"video_keyword"`
 }
 
 func TambahVideo(video Video) int64 {
@@ -37,11 +37,11 @@ func TambahVideo(video Video) int64 {
 	defer db.Close()
 
 	// buat insert query
-	sqlStatement := `INSERT INTO tbl_video (video_id, video_headings, video_desc, video_link, video_created_date, video_created_by, video_update_date, video_update_by) VALUES ($1, $2, $3, $4, CURRENT_DATE, $5, CURRENT_DATE, $6) RETURNING video_id`
+	sqlStatement := `INSERT INTO VIDEO (video_headings, video_desc, video_link, video_create_date, video_create_by, video_update_date, video_update_by, video_keyword) VALUES ($1, $2, $3, current_timestamp, $4, current_timestamp, $5, $6) RETURNING video_id;`
 
 	var video_id int64
 
-	err := db.QueryRow(sqlStatement, video.ID, video.Headings, video.Desc, video.Link, video.CreatedBy, video.UpdateBy).Scan(&video_id)
+	err := db.QueryRow(sqlStatement, video.Headings, video.Desc, video.Link, video.CreateBy, video.UpdateBy, video.Keyword).Scan(&video_id)
 
 	if err != nil {
 		log.Fatalf("Tidak Bisa mengeksekusi query. %v", err)
@@ -64,7 +64,7 @@ func AmbilSemuaVideo() ([]Video, error) {
 	var videos []Video
 
 	// buat select query
-	sqlStatement := `SELECT * FROM tbl_video`
+	sqlStatement := `SELECT * FROM video`
 
 	// mengeksekusi sql query
 	rows, err := db.Query(sqlStatement)
@@ -81,7 +81,7 @@ func AmbilSemuaVideo() ([]Video, error) {
 		var video Video
 
 		// ambil data video dan unmarshal ke structnya
-		err = rows.Scan(&video.ID, &video.ArtikelID, &video.Headings, &video.Desc, &video.Link, &video.CreatedDate, &video.CreatedBy, &video.UpdateDate, &video.UpdateBy)
+		err = rows.Scan(&video.ID, &video.ArtikelID, &video.Headings, &video.Desc, &video.Link, &video.CreateDate, &video.CreateBy, &video.UpdateDate, &video.UpdateBy, &video.Keyword)
 
 		if err != nil {
 			log.Fatalf("tidak bisa mengambil data. %v", err)
@@ -107,12 +107,12 @@ func AmbilSatuVideo(id int64) (Video, error) {
 	var video Video
 
 	// buat sql query
-	sqlStatement := `SELECT * FROM tbl_video WHERE id=$1`
+	sqlStatement := `SELECT * FROM video WHERE id=$1`
 
 	// eksekusi sql statement
 	row := db.QueryRow(sqlStatement, id)
 
-	err := row.Scan(&video.ID, &video.Headings, &video.Desc, &video.Link, &video.CreatedBy, &video.UpdateBy)
+	err := row.Scan(&video.ID, &video.Headings, &video.Desc, &video.Link, &video.CreateBy, &video.UpdateBy, &video.Keyword)
 
 	switch err {
 	case sql.ErrNoRows:
@@ -135,10 +135,10 @@ func UpdateVideo(video_id int64, video Video) int64 {
 	defer db.Close()
 
 	// sql query create
-	sqlStatement := `UPDATE tbl_video SET video_headings=$2, video_desc=$3, video_link=$4, video_created_by=$5, video_update_by=$6 WHERE video_id=$1`
+	sqlStatement := `UPDATE video SET video_headings=$2, video_desc=$3, video_link=$4, video_created_by=$5, video_update_by=$6 WHERE video_id=$1`
 
 	// eksekusi sql statement
-	res, err := db.Exec(sqlStatement, video.ID, video.Headings, video.Desc, video.Link, video.CreatedBy, video.UpdateBy)
+	res, err := db.Exec(sqlStatement, video.ID, video.Headings, video.Desc, video.Link, video.CreateBy, video.UpdateBy, video.Keyword)
 
 	if err != nil {
 		log.Fatalf("Tidak bisa mengeksekusi query. %v", err)
@@ -166,7 +166,7 @@ func HapusVideo(id int64) int64 {
 	defer db.Close()
 
 	// buat sql query
-	sqlStatement := `DELETE FROM tbl_video WHERE video_id=$1`
+	sqlStatement := `DELETE FROM video WHERE video_id=$1`
 
 	// eksekusi sql statement
 	res, err := db.Exec(sqlStatement, id)
