@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, TouchableOpacity, Text, View } from "react-native";
+import { StyleSheet, TouchableOpacity, Text, View, Image } from "react-native";
 import Icon from 'react-native-vector-icons/Feather';
 import Alert from "react-native-modal";
 
@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
         marginVertical: 5,
         marginLeft: 15,
         marginRight: 15,
-        paddingLeft: 120,
+        paddingLeft: 35,
         paddingVertical: 15
     },
     delete: {

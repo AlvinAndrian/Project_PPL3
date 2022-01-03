@@ -6,11 +6,12 @@ import axios from 'axios';
 import HeaderTitle from './HeaderTitle';
 
 const initialFormImage = {
-    id: "",
+    image_id: "",
     image_headings: "",
     image_desc: "",
     image_created_by: "",
     image_link: "",
+    image_keyword: "",
 }
 
 const ListTipsRiding = () => {
@@ -19,19 +20,19 @@ const ListTipsRiding = () => {
     const [users, setUsers] = useState([])
     const [formImage, setFormImage] = useState(initialFormImage)
 
-    const loadData = () => {
-        axios.get('http://10.0.2.2:3005/image').then(resp => {
+    const loadDataImage = () => {
+        axios.get('https://6188e136d0821900178d75ad.mockapi.io/Admin/v1/image').then(resp => {
             setUsers(resp.data)
-            loadData()
+            loadDataImage();
         });
     }
 
-    const handleSave = (action) => {
-        axios.put(`http://10.0.2.2:3005/image/${formImage.id}`, formImage).then(resp => {
+    const handleSave = () => {
+        axios.put(`https://6188e136d0821900178d75ad.mockapi.io/Admin/v1/image/${formImage.image_id}`, formImage).then(resp => {
             setFormImage("")
             setModalVisibleImage(false)
             setFormImage(initialFormImage)
-            loadData()
+            loadDataImage();
         })
     }
 
@@ -44,15 +45,15 @@ const ListTipsRiding = () => {
         setModalVisibleImage(true)
     }
 
-    const handleDeleteUser = (id) => {
+    const handleDeleteUser = (image_id) => {
 
-        axios.delete(`http://10.0.2.2:3005/image/${id}`).then(resp => {
-            loadData()
+        axios.delete(`https://6188e136d0821900178d75ad.mockapi.io/Admin/v1/image/${image_id}`).then(resp => {
+            loadDataImage()
         })
     }
 
     useEffect(() => {
-        loadData()
+        loadDataImage()
     }, [])
 
 
@@ -61,7 +62,7 @@ const ListTipsRiding = () => {
             <FlatList
                 data={users}
                 renderItem={({ item: user }) => <CardImageComponent data={user} handleClicked={handleSelectedUser} handleDeleteUser={handleDeleteUser} />}
-                keyExtractor={({ id }) => id}
+                keyExtractor={({ image_id }) => image_id}
             />
             <Modal
                 visible={modalVisibleImage}
@@ -109,6 +110,13 @@ const ListTipsRiding = () => {
                                 onChangeText={(text) => handleTextInput('image_desc', text)}
                                 multiline={true}
                                 numberOfLines={5}
+                            />
+                            <Text style={styles.title}>Keyword</Text>
+                            <TextInput
+                                style={styles.textinput}
+                                value={formImage.image_keyword}
+                                placeholder="Masukan Kata Kunci"
+                                onChangeText={(text) => handleTextInput('image_keyword', text)}
                             />
                             <Text style={styles.title}>Created By</Text>
                             <TextInput

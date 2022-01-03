@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Modal, ScrollView, Text, TextInput, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Modal, ScrollView, Text, TextInput, TouchableOpacity, Sequence } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import ListVideoRiding from '../components/ListVideoRiding';
 import ListTipsRiding from '../components/ListTipsRiding';
@@ -15,66 +15,76 @@ const RootStack = createNativeStackNavigator();
 
 const Safety = () => {
 
-  const [modalVisibleVideo, setModalVisibleVideo] = useState(false)
+  const [modalVisibleVideo, setModalVisibleVideo] = useState(false);
   const [video_headings, setVideo_Headings] = useState('');
-  const [video_desc, setVideo_Desc] = useState('')
-  const [video_created_by, setVideo_Created_By] = useState('');
+  const [video_desc, setVideo_Desc] = useState('');
+  const [video_create_by, setVideo_Create_By] = useState('');
   const [video_link, setVideo_Link] = useState('');
+  const [video_keyword, setVideo_Keyword] = useState('');
 
   const [iserror, setIsError] = useState(false);
   const [iscorrect, setIsCorrect] = useState(false);
 
-  const [modalVisibleImage, setModalVisibleImage] = useState(false)
+  const [modalVisibleImage, setModalVisibleImage] = useState(false);
   const [image_headings, setImage_Headings] = useState('');
   const [image_desc, setImage_Desc] = useState('');
-  const [image_created_by, setImage_Created_By] = useState('');
+  const [image_create_by, setImage_Create_By] = useState('');
   const [image_link, setImage_Link] = useState('');
+  const [image_keyword, setImage_Keyword] = useState('');
 
   const handleSaveVideo = () => {
     const formVideo = {
       video_headings,
       video_desc,
-      video_created_by,
+      video_create_by,
       video_link,
+      video_keyword,
     };
 
     // http://10.0.2.2:3004/video
     // http://127.0.0.1:8080
+    // https://6188e136d0821900178d75ad.mockapi.io/Admin/v1/video
 
-    if (video_headings == '' || video_desc == '' || video_created_by == '' || video_link == '') {
+    if (video_headings == '' || video_desc == '' || video_create_by == '' || video_link == '' || video_keyword == '') {
       setIsError(!iserror);
     } else {
-      axios.post(`http://10.0.2.2:3004/video`, formVideo).then(resp => {
+      axios.post(`http://localhost:8080/api/video`, formVideo).then(resp => {
         console.log("CREATE DATA", resp);
         setIsCorrect(!iscorrect);
         setModalVisibleVideo(false);
         setVideo_Headings("");
         setVideo_Desc("");
-        setVideo_Created_By("");
+        setVideo_Create_By("");
         setVideo_Link("");
+        setVideo_Keyword("");
+        loadData();
       })
     }
   }
 
   const handleSaveImage = () => {
     const formImage = {
+      // image_id,
       image_headings,
       image_desc,
-      image_created_by,
+      image_create_by,
       image_link,
+      image_keyword,
     };
 
-    if (image_headings == '' || image_desc == '' || image_created_by == '' || image_link == '') {
+    if (image_headings == '' || image_desc == '' || image_create_by == '' || image_link == '' || image_keyword == '') {
       setIsError(!iserror);
     } else {
-      axios.post(`http://10.0.2.2:3005/image`, formImage).then(resp => {
+      axios.post(`https://6188e136d0821900178d75ad.mockapi.io/Admin/v1/image`, formImage).then(resp => {
         console.log("CREATE DATA", resp);
         setIsCorrect(!iscorrect);
         setModalVisibleImage(false);
         setImage_Headings("");
         setImage_Desc("");
-        setImage_Created_By("");
+        setImage_Create_By("");
         setImage_Link("");
+        setImage_Keyword("");
+        loadData();
       })
     }
   }
@@ -132,8 +142,9 @@ const Safety = () => {
                 setModalVisibleVideo(false)
                 || setVideo_Headings("")
                 || setVideo_Desc("")
-                || setVideo_Created_By("")
-                || setVideo_Link("")}
+                || setVideo_Create_By("")
+                || setVideo_Link("")
+                || setImage_Keyword("")}
             />
             <View
               style={{
@@ -165,12 +176,19 @@ const Safety = () => {
                 multiline={true}
                 numberOfLines={5}
               />
+              <Text style={styles.title}>Keyword</Text>
+              <TextInput
+                style={styles.textinput}
+                value={video_keyword}
+                placeholder="Masukan Kata Kunci"
+                onChangeText={value => setVideo_Keyword(value)}
+              />
               <Text style={styles.title}>Created By</Text>
               <TextInput
                 style={styles.textinput}
-                value={video_created_by}
+                value={video_create_by}
                 placeholder="Masukan Pembuat"
-                onChangeText={value => setVideo_Created_By(value)}
+                onChangeText={value => setVideo_Create_By(value)}
               />
               <Text style={styles.title}>Url Video</Text>
               <TextInput
@@ -208,8 +226,9 @@ const Safety = () => {
                 setModalVisibleImage(false)
                 || setImage_Headings("")
                 || setImage_Desc("")
-                || setImage_Created_By("")
-                || setImage_Link("")}
+                || setImage_Create_By("")
+                || setImage_Link("")
+                || setImage_Keyword("")}
             />
             <View
               style={{
@@ -241,12 +260,19 @@ const Safety = () => {
                 multiline={true}
                 numberOfLines={5}
               />
+              <Text style={styles.title}>Keyword</Text>
+              <TextInput
+                style={styles.textinput}
+                value={image_keyword}
+                placeholder="Masukan Kata Kunci"
+                onChangeText={value => setImage_Keyword(value)}
+              />
               <Text style={styles.title}>Created By</Text>
               <TextInput
                 style={styles.textinput}
-                value={image_created_by}
+                value={image_create_by}
                 placeholder="Masukan Pembuat"
-                onChangeText={value => setImage_Created_By(value)}
+                onChangeText={value => setImage_Create_By(value)}
               />
               <Text style={styles.title}>Url Image</Text>
               <TextInput

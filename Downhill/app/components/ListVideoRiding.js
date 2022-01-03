@@ -6,10 +6,11 @@ import axios from 'axios';
 import HeaderTitle from './HeaderTitle';
 
 const initialFormVideo = {
-    id: "",
+    video_id: "",
     video_headings: "",
     video_desc: "",
-    video_created_by: "",
+    video_keyword: "",
+    video_create_by: "",
     video_link: "",
 }
 
@@ -22,22 +23,22 @@ const ListVideoRiding = () => {
     // http://10.0.2.2:3004/video
     // http://127.0.0.1:8080
 
-    const loadData = () => {
-        axios.get('http://10.0.2.2:3004/video/').then(resp => {
-            setUsers(resp.data)
-            loadData()
+    const loadDataVideo = () => {
+        axios.get('http://10.0.2.2:8080/api/video/data').then(resp => {
+            setUsers(resp.data);
+            loadDataVideo();
         });
     }
 
     // http://10.0.2.2:3004/video/
     // http://127.0.0.1:8080/
 
-    const handleSave = (action) => {
-        axios.put(`http://10.0.2.2:3004/video/${formVideo.id}`, formVideo).then(resp => {
+    const handleSave = () => {
+        axios.put(`http://localhost:8080/api/video/${formVideo.video_id}`, formVideo).then(resp => {
             setFormVideo("")
             setModalVisibleVideo(false)
             setFormVideo(initialFormVideo)
-            loadData()
+            loadDataVideo();
         })
     }
 
@@ -50,15 +51,14 @@ const ListVideoRiding = () => {
         setModalVisibleVideo(true)
     }
 
-    const handleDeleteUser = (id) => {
-
-        axios.delete(`http://10.0.2.2:3004/video/${id}`).then(resp => {
-            loadData()
+    const handleDeleteUser = (video_id) => {
+        axios.delete(`http://localhost:8080/api/video/${video_id}`).then(resp => {
+            loadDataVideo()
         })
     }
 
     useEffect(() => {
-        loadData()
+        loadDataVideo()
     }, [])
 
 
@@ -67,7 +67,7 @@ const ListVideoRiding = () => {
             <FlatList
                 data={users}
                 renderItem={({ item: user }) => <CardVideoComponent data={user} handleClicked={handleSelectedUser} handleDeleteUser={handleDeleteUser} />}
-                keyExtractor={({ id }) => id}
+                keyExtractor={({ video_id }) => video_id}
             />
             <Modal
                 visible={modalVisibleVideo}
@@ -116,12 +116,19 @@ const ListVideoRiding = () => {
                                 multiline={true}
                                 numberOfLines={5}
                             />
+                            <Text style={styles.title}>Keyword</Text>
+                            <TextInput
+                                style={styles.textinput}
+                                value={formVideo.video_keyword}
+                                placeholder="Masukan Kata Kunci"
+                                onChangeText={(text) => handleTextInput('video_keyword', text)}
+                            />
                             <Text style={styles.title}>Created By</Text>
                             <TextInput
                                 style={styles.textinput}
-                                value={formVideo.video_created_by}
+                                value={formVideo.video_create_by}
                                 placeholder="Masukan Pembuat"
-                                onChangeText={(text) => handleTextInput('video_created_by', text)}
+                                onChangeText={(text) => handleTextInput('video_create_by', text)}
                             />
                             <Text style={styles.title}>Url Video</Text>
                             <TextInput
