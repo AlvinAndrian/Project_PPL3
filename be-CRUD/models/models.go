@@ -170,7 +170,7 @@ func HapusVideo(id int64) int64 {
 	// buat sql query
 	sqlStatement := `DELETE FROM video WHERE video_id=$1`
 
-	// eksekusi sql statement
+	// eksekusi sql statemen
 	res, err := db.Exec(sqlStatement, id)
 
 	if err != nil {
