@@ -1,6 +1,6 @@
 package controller
 
-// terdapat file video.go yang memiliki fungsi sebagai wadah komunikasi awal sebelum terjadinya transaksi data ke db
+// terdapat file Video.go yang memiliki fungsi sebagai wadah komunikasi awal sebelum terjadinya transaksi data ke db
 
 import (
 	"encoding/json" // package untuk enkode dan mendekode json menjadi struct dan sebaliknya
@@ -9,7 +9,7 @@ import (
 
 	"log"
 	"net/http" // digunakan untuk mengakses objek permintaan dan respons dari api
-	
+
 	"be-CRUD/models" //models package dimana Video didefinisikan
 
 	"github.com/gorilla/mux" // digunakan untuk mendapatkan parameter dari router
@@ -30,7 +30,6 @@ type Response struct {
 // TambahVideo
 func TmbhVideo(w http.ResponseWriter, r *http.Request) {
 
-	// create an empty user of type models.User
 	// buat empty video dengan tipe models.Video
 	var video models.Video
 
@@ -84,6 +83,7 @@ func AmbilVideo(w http.ResponseWriter, r *http.Request) {
 func AmbilSemuaVideo(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
+
 	// memanggil models AmbilSemuaVideo
 	videos, err := models.AmbilSemuaVideo()
 
