@@ -306,7 +306,7 @@ func AmbilSatuArtikel(id int64) (Artikel, error) {
 }
 
 // fungsi untuk update single artikel
-func UpdateArtikel(artikel_id int64, artikel Artikel) int64 {
+func UpdateArtikel(id int64, artikel Artikel) int64 {
 
 	db := config.CreateConnection()
 
@@ -316,7 +316,7 @@ func UpdateArtikel(artikel_id int64, artikel Artikel) int64 {
 	sqlStatement := `UPDATE Artikel SET artikel_headings = $2, artikel_desc = $3, artikel_link = $4, artikel_image = $5, artikel_create_by = $6, artikel_update_by = $7 WHERE artikel_id=$1`
 
 	// eksekusi sql statement
-	res, err := db.Exec(sqlStatement, artikel.ID, artikel.Headings, artikel.Desc, artikel.Link, artikel.Image, artikel.CreateBy, artikel.UpdateBy)
+	res, err := db.Exec(sqlStatement, id, artikel.Headings, artikel.Desc, artikel.Link, artikel.Image, artikel.CreateBy, artikel.UpdateBy)
 
 	if err != nil {
 		log.Fatalf("Tidak bisa mengeksekusi query. %v", err)
