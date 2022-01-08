@@ -1,4 +1,5 @@
 package config
+
 // terdapat file config.go yang memiliki fungsi untuk konfigurasi koneksi ke DB PostgreSql.
 
 import (
@@ -30,7 +31,7 @@ func CreateConnection() *sql.DB {
 	Password: whirlpool */
 
 	db, err := sql.Open("postgres", os.Getenv("POSTGRES_URL"))
-	
+
 	if err != nil {
 		panic(err)
 	}
@@ -46,7 +47,6 @@ func CreateConnection() *sql.DB {
 	// return the connection
 	return db
 }
-
 
 // fungsi untuk menampung jika struct / data bertipe NULL maka dia akan mengisikan data(string) kosong.
 type NullString struct {
@@ -67,4 +67,16 @@ func (s *NullString) UnmarshalJSON(data []byte) error {
 	}
 	s.String, s.Valid = string(data), true
 	return nil
+}
+
+// fungsi untuk menampung jika struct / data bertipe NULL maka dia akan mengisikan data(time) kosong.
+type NullTime struct {
+	sql.NullTime
+}
+
+func (t NullTime) MarshalJSON() ([]byte, error) {
+	if !t.Valid {
+		return []byte("null"), nil
+	}
+	return t.Time.MarshalJSON()
 }

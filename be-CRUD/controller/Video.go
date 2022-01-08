@@ -100,6 +100,7 @@ func AmbilSemuaVideo(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(response)
 }
 
+//fungsi update video
 func UpdateVideo(w http.ResponseWriter, r *http.Request) {
 
 	// ambil request parameter idnya
@@ -162,6 +163,6 @@ func HapusVideo(w http.ResponseWriter, r *http.Request) {
 		Message: msg,
 	}
 
-	// send the response
+	// kirim berupa response
 	json.NewEncoder(w).Encode(res)
 }

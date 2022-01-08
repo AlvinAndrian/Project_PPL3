@@ -1,7 +1,5 @@
 package controller
 
-// terdapat file Artikel.go yang memiliki fungsi sebagai wadah komunikasi awal sebelum terjadinya transaksi data ke db
-
 import (
 	"encoding/json"
 	"fmt"
@@ -16,21 +14,16 @@ import (
 	_ "github.com/lib/pq"
 )
 
-type responseSatu struct {
-	ID      int64  `json:"id,omitempty"`
-	Message string `json:"message,omitempty"`
-}
-
 type ResponseDua struct {
 	Status  int              `json:"status"`
 	Message string           `json:"message"`
 	Data    []models.Artikel `json:"data"`
 }
 
-// TambahArtikel
+// TmbhArtikel
 func TmbhArtikel(w http.ResponseWriter, r *http.Request) {
 
-	// buat empty video dengan tipe models.Artikel
+	// membuat empty video dengan tipe models.Artikel
 	var artikel models.Artikel
 
 	// decode data json request ke artikel
@@ -44,7 +37,7 @@ func TmbhArtikel(w http.ResponseWriter, r *http.Request) {
 	insertID := models.TambahArtikel(artikel)
 
 	// format response objectnya
-	res := responseSatu{
+	res := response{
 		ID:      insertID,
 		Message: "Data artikel telah ditambahkan",
 	}
@@ -100,6 +93,7 @@ func AmbilSemuaArtikel(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(response)
 }
 
+// UpdateArtikel
 func UpdateArtikel(w http.ResponseWriter, r *http.Request) {
 
 	// ambil request parameter idnya
@@ -157,7 +151,7 @@ func HapusArtikel(w http.ResponseWriter, r *http.Request) {
 	msg := fmt.Sprintf("artikel sukses di hapus. Total data yang dihapus %v", deletedRows)
 
 	// ini adalah format reponse message
-	res := responseSatu{
+	res := response{
 		ID:      int64(id),
 		Message: msg,
 	}
