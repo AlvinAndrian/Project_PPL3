@@ -20,10 +20,10 @@ type ResponseDua struct {
 	Data    []models.Artikel `json:"data"`
 }
 
-// TambahArtikel
+// TmbhArtikel
 func TmbhArtikel(w http.ResponseWriter, r *http.Request) {
 
-	// buat empty video dengan tipe models.Artikel
+	// membuat empty video dengan tipe models.Artikel
 	var artikel models.Artikel
 
 	// decode data json request ke artikel
@@ -93,7 +93,7 @@ func AmbilSemuaArtikel(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(response)
 }
 
-// fungsi
+// UpdateArtikel
 func UpdateArtikel(w http.ResponseWriter, r *http.Request) {
 
 	// ambil request parameter idnya
