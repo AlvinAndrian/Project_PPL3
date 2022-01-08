@@ -1,71 +1,155 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, Text, FlatList, Modal, TextInput, TouchableOpacity, ScrollView } from 'react-native';
-import CardImageComponent from './CardImageComponent';
+import CardArtikelComponent from './CardArtikelComponent';
 import Icon from 'react-native-vector-icons/Feather'
 import axios from 'axios';
 import HeaderTitle from './HeaderTitle';
+import Feather from 'react-native-vector-icons/Feather';
+import MenuPopup from "react-native-modal";
+import { useNavigation } from '@react-navigation/native';
 
-const initialFormImage = {
-    image_id: "",
-    image_headings: "",
-    image_desc: "",
-    image_created_by: "",
-    image_link: "",
-    image_keyword: "",
+const initialFormArtikel = {
+    artikel_id: "",
+    artikel_headings: "",
+    artikel_desc: "",
+    artikel_created_by: "",
+    artikel_link: "",
+    artikel_image: "",
 }
 
 const ListTipsRiding = () => {
 
-    const [modalVisibleImage, setModalVisibleImage] = useState(false)
-    const [users, setUsers] = useState([])
-    const [formImage, setFormImage] = useState(initialFormImage)
+    const navigation = useNavigation();
 
-    const loadDataImage = () => {
-        axios.get('https://6188e136d0821900178d75ad.mockapi.io/Admin/v1/image').then(resp => {
-            setUsers(resp.data)
-            loadDataImage();
+    const [modalVisibleArtikel, setModalVisibleArtikel] = useState(false)
+    const [users, setUsers] = useState([])
+    const [masterData, setMasterData] = useState([]);
+    const [formArtikel, setFormArtikel] = useState(initialFormArtikel)
+    const [isopen, setIsOpen] = useState(false);
+    const [search, setsearch] = useState('');
+
+    const loadDataArtikel = () => {
+        axios.get('http://10.0.2.2:3005/artikel').then(resp => {
+            setUsers(resp.data);
+            setMasterData(resp.data);
         });
     }
 
     const handleSave = () => {
-        axios.put(`https://6188e136d0821900178d75ad.mockapi.io/Admin/v1/image/${formImage.image_id}`, formImage).then(resp => {
-            setFormImage("")
-            setModalVisibleImage(false)
-            setFormImage(initialFormImage)
-            loadDataImage();
+        axios.put(`http://10.0.2.2:3005/artikel/${formArtikel.artikel_id}`, formArtikel).then(resp => {
+            setFormArtikel("")
+            setModalVisibleArtikel(false)
+            setFormArtikel(initialFormArtikel)
+            loadDataArtikel();
         })
     }
 
     const handleTextInput = (name, text) => {
-        setFormImage({ ...formImage, [name]: text })
+        setFormArtikel({ ...formArtikel, [name]: text })
     }
 
     const handleSelectedUser = (user) => {
-        setFormImage(user)
-        setModalVisibleImage(true)
+        setFormArtikel(user)
+        setModalVisibleArtikel(true)
     }
 
-    const handleDeleteUser = (image_id) => {
-
-        axios.delete(`https://6188e136d0821900178d75ad.mockapi.io/Admin/v1/image/${image_id}`).then(resp => {
-            loadDataImage()
+    const handleDeleteUser = (artikel_id) => {
+        axios.delete(`http://10.0.2.2:3005/artikel/${artikel_id}`).then(resp => {
+            loadDataArtikel()
         })
     }
 
+    const searchFilter = (text) => {
+        if (text) {
+            const newData = masterData.filter((item) => {
+                const itemData = item.artikel_headings ? item.artikel_headings.toUpperCase() : ''.toUpperCase();
+                const textData = text.toUpperCase();
+                return itemData.indexOf(textData) > -1;
+            })
+            setUsers(newData);
+            setsearch(text);
+        } else {
+            setUsers(masterData);
+            setsearch(text);
+        }
+    }
+
     useEffect(() => {
-        loadDataImage()
+        loadDataArtikel()
     }, [])
 
 
     return (
         <View style={styles.container}>
+            <HeaderTitle title="Get Guidance and Information Tips Riding" />
+            <View
+                style={{
+                    position: 'relative',
+                    marginLeft: 20,
+                    marginRight: 55,
+                    marginVertical: 10,
+                }}>
+                <TextInput
+                    placeholder="Search Now"
+                    value={search}
+                    onChangeText={(text) => searchFilter(text)}
+                    style={{
+                        borderWidth: 1,
+                        borderColor: '#EEEBEB',
+                        borderRadius: 8,
+                        fontSize: 18,
+                        fontFamily: 'Poppins-ExtraLight',
+                        paddingLeft: 60,
+                        paddingRight: 20,
+                        backgroundColor: '#EEEBEB',
+                    }}
+                />
+                <Feather
+                    name='search'
+                    size={24}
+                    color='#0C8EFF'
+                    style={{ position: 'absolute', top: 13, left: 19, }}
+                />
+            </View>
+            <TouchableOpacity>
+                <Feather
+                    name='menu'
+                    size={30}
+                    color='#0C8EFF'
+                    onPress={() => setIsOpen(!isopen)}
+                    style={{ left: 370, top: -50, position: 'absolute' }}
+                />
+            </TouchableOpacity>
+            <MenuPopup isVisible={isopen} >
+                <View style={styles.menu}>
+                    <TouchableOpacity onPress={() => navigation.navigate('ListVideoRiding') || setIsOpen(false)}>
+                        <Text style={styles.pil1}>Video Riding</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => navigation.navigate('ListTipsRiding') || setIsOpen(false)}>
+                        <Text style={styles.pil2}>Tips Riding</Text>
+                    </TouchableOpacity>
+                </View>
+            </MenuPopup>
+            <View
+                style={{
+                    borderBottomWidth: 0.5,
+                    shadowColor: '#000',
+                    shadowOffset: {
+                        width: 0,
+                        height: 6,
+                    },
+                    shadowOpacity: 0.37,
+                    shadowRadius: 7.49,
+                    elevation: 4,
+                }}
+            />
             <FlatList
                 data={users}
-                renderItem={({ item: user }) => <CardImageComponent data={user} handleClicked={handleSelectedUser} handleDeleteUser={handleDeleteUser} />}
-                keyExtractor={({ image_id }) => image_id}
+                renderItem={({ item: user }) => <CardArtikelComponent data={user} handleClicked={handleSelectedUser} handleDeleteUser={handleDeleteUser} />}
+                keyExtractor={({ artikel_id }) => artikel_id}
             />
             <Modal
-                visible={modalVisibleImage}
+                visible={modalVisibleArtikel}
                 animationType='fade'
                 presentationStyle='overFullScreen'
             >
@@ -79,7 +163,7 @@ const ListTipsRiding = () => {
                             style={styles.cancel}
                             name='x'
                             size={24}
-                            onPress={() => setModalVisibleImage(false) || setFormImage("")}
+                            onPress={() => setModalVisibleArtikel(false) || setFormArtikel("")}
                         />
                         <View
                             style={{
@@ -98,39 +182,39 @@ const ListTipsRiding = () => {
                             <Text style={styles.title}>Judul</Text>
                             <TextInput
                                 style={styles.textinput}
-                                value={formImage.image_headings}
+                                value={formArtikel.artikel_headings}
                                 placeholder="Masukan Judul"
-                                onChangeText={(text) => handleTextInput('image_headings', text)}
+                                onChangeText={(text) => handleTextInput('artikel_headings', text)}
                             />
                             <Text style={styles.title}>Deskripsi</Text>
                             <TextInput
                                 style={styles.textinput}
-                                value={formImage.image_desc}
+                                value={formArtikel.artikel_desc}
                                 placeholder="Masukan Deskripsi"
-                                onChangeText={(text) => handleTextInput('image_desc', text)}
+                                onChangeText={(text) => handleTextInput('artikel_desc', text)}
                                 multiline={true}
                                 numberOfLines={5}
-                            />
-                            <Text style={styles.title}>Keyword</Text>
-                            <TextInput
-                                style={styles.textinput}
-                                value={formImage.image_keyword}
-                                placeholder="Masukan Kata Kunci"
-                                onChangeText={(text) => handleTextInput('image_keyword', text)}
                             />
                             <Text style={styles.title}>Created By</Text>
                             <TextInput
                                 style={styles.textinput}
-                                value={formImage.image_created_by}
+                                value={formArtikel.artikel_created_by}
                                 placeholder="Masukan Pembuat"
-                                onChangeText={(text) => handleTextInput('image_created_by', text)}
+                                onChangeText={(text) => handleTextInput('artikel_created_by', text)}
+                            />
+                            <Text style={styles.title}>Url Artikel</Text>
+                            <TextInput
+                                style={styles.textinput}
+                                value={formArtikel.artikel_link}
+                                placeholder="Masukan Url Artikel"
+                                onChangeText={(text) => handleTextInput('artikel_link', text)}
                             />
                             <Text style={styles.title}>Url Image</Text>
                             <TextInput
                                 style={styles.textinput}
-                                value={formImage.image_link}
+                                value={formArtikel.artikel_image}
                                 placeholder="Masukan Url Image"
-                                onChangeText={(text) => handleTextInput('image_link', text)}
+                                onChangeText={(text) => handleTextInput('artikel_image', text)}
                             />
                         </View>
                         <TouchableOpacity
@@ -193,6 +277,33 @@ const styles = StyleSheet.create({
         marginHorizontal: 120,
         padding: 10,
         borderRadius: 8
-    }
+    },
+    menu: {
+        backgroundColor: "#ffffff",
+        borderRadius: 5,
+        margin: 40,
+        position: 'absolute',
+        top: 60,
+        left: 190,
+        paddingHorizontal: 20,
+        paddingVertical: 15,
+    },
+    pil1: {
+        backgroundColor: "#0C8EFF",
+        color: "#FFFFFF",
+        paddingVertical: 5,
+        paddingHorizontal: 10,
+        marginBottom: 5,
+        borderRadius: 5,
+        textAlign: "center",
+    },
+    pil2: {
+        backgroundColor: "#0C8EFF",
+        color: "#FFFFFF",
+        paddingVertical: 5,
+        paddingHorizontal: 10,
+        borderRadius: 5,
+        textAlign: "center",
+    },
 });
 

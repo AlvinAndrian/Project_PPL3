@@ -31,7 +31,7 @@ export default class FloatingButton extends React.Component {
             ]
         }
 
-        const imageStyle = {
+        const artikelStyle = {
             transform: [
                 { scale: this.animation },
                 {
@@ -56,8 +56,8 @@ export default class FloatingButton extends React.Component {
 
         return (
             <View style={[styles.container, this.props.style]} >
-                <TouchableWithoutFeedback onPress={this.props.onImage}>
-                    <Animated.View style={[styles.button, styles.secondary, imageStyle]}>
+                <TouchableWithoutFeedback onPress={this.props.onArtikel}>
+                    <Animated.View style={[styles.button, styles.secondary, artikelStyle]}>
                         <Entypo name="images" size={20} color="#ffffff" />
                     </Animated.View>
                 </TouchableWithoutFeedback>

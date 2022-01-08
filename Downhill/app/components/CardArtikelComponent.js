@@ -3,7 +3,7 @@ import { StyleSheet, TouchableOpacity, Text, View, Image } from "react-native";
 import Icon from 'react-native-vector-icons/Feather';
 import Alert from "react-native-modal";
 
-const CardImageComponent = ({ data, handleClicked, handleDeleteUser }) => {
+const CardArtikelComponent = ({ data, handleClicked, handleDeleteUser }) => {
 
     const [isdelete, setIsDelete] = useState(false);
 
@@ -12,10 +12,10 @@ const CardImageComponent = ({ data, handleClicked, handleDeleteUser }) => {
             <TouchableOpacity style={styles.list} onPress={() => handleClicked(data)}>
                 <Image
                     style={{ width: 100, height: 100, position: 'absolute', top: 13, left: 10, borderRadius: 8 }}
-                    source={{ uri: data.image_link }} />
-                <Text style={styles.judul} numberOfLines={1}>{data.image_headings}</Text>
-                <Text style={styles.deskripsi} numberOfLines={2}>{data.image_desc}</Text>
-                <Text style={styles.penulis}>{data.image_created_by}</Text>
+                    source={{ uri: data.artikel_link }} />
+                <Text style={styles.judul} numberOfLines={1}>{data.artikel_headings}</Text>
+                <Text style={styles.deskripsi} numberOfLines={2}>{data.artikel_desc}</Text>
+                <Text style={styles.penulis}>{data.artikel_created_by}</Text>
                 <Icon
                     name='x'
                     size={24}
@@ -39,7 +39,7 @@ const CardImageComponent = ({ data, handleClicked, handleDeleteUser }) => {
     );
 }
 
-export default CardImageComponent;
+export default CardArtikelComponent;
 
 const styles = StyleSheet.create({
     list: {

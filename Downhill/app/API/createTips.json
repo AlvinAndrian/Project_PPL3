@@ -1,0 +1,35 @@
+{
+    "artikel": [{
+            "artikel_headings": "aaaa",
+            "artikel_desc": "aaaa",
+            "artikel_create_by": "aaaa",
+            "artikel_link": "aaaa",
+            "artikel_image": "aaaa",
+            "id": 1
+        },
+        {
+            "artikel_headings": "bbbbb",
+            "artikel_desc": "bbbbb",
+            "artikel_create_by": "bbbbb",
+            "artikel_link": "bb",
+            "artikel_image": "bbbb",
+            "id": 2
+        },
+        {
+            "artikel_headings": "cccc",
+            "artikel_desc": "cccc",
+            "artikel_create_by": "cccc",
+            "artikel_link": "ccc",
+            "artikel_image": "ccc",
+            "id": 3
+        },
+        {
+            "artikel_headings": "ddddd",
+            "artikel_desc": "ddd",
+            "artikel_create_by": "dddd",
+            "artikel_link": "ddd",
+            "artikel_image": "dddd",
+            "id": 4
+        }
+    ]
+}
