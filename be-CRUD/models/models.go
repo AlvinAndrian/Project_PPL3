@@ -362,7 +362,7 @@ func HapusArtikel(id int64) int64 {
 		log.Fatalf("tidak bisa mencari data. %v", err)
 	}
 
-	fmt.Printf("Total data yang terhapuss %v", rowsAffected)
+	fmt.Printf("Total data yang terhapus %v", rowsAffected)
 
 	return rowsAffected
 }
