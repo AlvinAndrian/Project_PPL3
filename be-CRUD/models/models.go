@@ -25,7 +25,6 @@ type Video struct {
 	CreateBy   string            `json:"video_create_by"`
 	UpdateDate time.Time         `json:"video_update_date"`
 	UpdateBy   config.NullString `json:"video_update_by"`
-	Keyword    string            `json:"video_keyword"`
 }
 
 type Artikel struct {
@@ -37,10 +36,8 @@ type Artikel struct {
 	Image      config.NullString `json:"artikel_iamge"`
 	CreateDate time.Time         `json:"artikel_create_date"`
 	CreateBy   string            `json:"artikel_create_by"`
-	UpdateDate time.Time         `json:"artikel_update_date"`
+	UpdateDate config.NullTime   `json:"artikel_update_date"`
 	UpdateBy   config.NullString `json:"artikel_update_by"`
-	Keyword    string            `json:"artikel_keyword"`
-	Author     string            `json:"artikel_author"`
 }
 
 // fungsi untuk create single video
@@ -53,11 +50,12 @@ func TambahVideo(video Video) int64 {
 	defer db.Close()
 
 	// buat insert query
-	sqlStatement := `INSERT INTO VIDEO (video_headings, video_desc, video_link, video_create_date, video_create_by, video_update_date, video_update_by, video_keyword) VALUES ($1, $2, $3, current_timestamp, $4, current_timestamp, $5, $6) RETURNING video_id;`
+	sqlStatement := `INSERT INTO VIDEO (video_headings, video_desc, video_link, video_create_date, video_create_by, video_update_date, video_update_by) 
+	                VALUES ($1, $2, $3, current_timestamp, $4, current_timestamp, $5) RETURNING video_id;`
 
 	var video_id int64
 
-	err := db.QueryRow(sqlStatement, video.Headings, video.Desc, video.Link, video.CreateBy, video.UpdateBy, video.Keyword).Scan(&video_id)
+	err := db.QueryRow(sqlStatement, video.Headings, video.Desc, video.Link, video.CreateBy, video.UpdateBy).Scan(&video_id)
 
 	if err != nil {
 		log.Fatalf("Tidak Bisa mengeksekusi query. %v", err)
@@ -98,7 +96,7 @@ func AmbilSemuaVideo() ([]Video, error) {
 		var video Video
 
 		// ambil data video dan unmarshal ke structnya
-		err = rows.Scan(&video.ID, &video.ArtikelID, &video.Headings, &video.Desc, &video.Link, &video.CreateDate, &video.CreateBy, &video.UpdateDate, &video.UpdateBy, &video.Keyword)
+		err = rows.Scan(&video.ID, &video.ArtikelID, &video.Headings, &video.Desc, &video.Link, &video.CreateDate, &video.CreateBy, &video.UpdateDate, &video.UpdateBy)
 
 		if err != nil {
 			log.Fatalf("tidak bisa mengambil data. %v", err)
@@ -129,7 +127,7 @@ func AmbilSatuVideo(id int64) (Video, error) {
 	// eksekusi sql statement
 	row := db.QueryRow(sqlStatement, id)
 
-	err := row.Scan(&video.ID, &video.ArtikelID, &video.Headings, &video.Desc, &video.Link, &video.CreateDate, &video.CreateBy, &video.UpdateDate, &video.UpdateBy, &video.Keyword)
+	err := row.Scan(&video.ID, &video.ArtikelID, &video.Headings, &video.Desc, &video.Link, &video.CreateDate, &video.CreateBy, &video.UpdateDate, &video.UpdateBy)
 
 	switch err {
 	case sql.ErrNoRows:
@@ -145,17 +143,17 @@ func AmbilSatuVideo(id int64) (Video, error) {
 }
 
 // fungsi untuk update single video
-func UpdateVideo(video_id int64, video Video) int64 {
+func UpdateVideo(id int64, video Video) int64 {
 
 	db := config.CreateConnection()
 
 	defer db.Close()
 
 	// sql query create
-	sqlStatement := `UPDATE video SET video_headings=$2, video_desc=$3, video_link=$4, video_created_by=$5, video_update_by=$6 WHERE video_id=$1`
+	sqlStatement := `UPDATE video SET video_headings=$2, video_desc=$3, video_link=$4, video_create_by=$5, video_update_by=$6 WHERE video_id=$1`
 
 	// eksekusi sql statement
-	res, err := db.Exec(sqlStatement, video.ID, video.Headings, video.Desc, video.Link, video.CreateBy, video.UpdateBy, video.Keyword)
+	res, err := db.Exec(sqlStatement, id, video.Headings, video.Desc, video.Link, video.CreateBy, video.UpdateBy)
 
 	if err != nil {
 		log.Fatalf("Tidak bisa mengeksekusi query. %v", err)
@@ -215,11 +213,12 @@ func TambahArtikel(artikel Artikel) int64 {
 	defer db.Close()
 
 	// buat insert query
-	sqlStatement := `INSERT INTO ARTIKEL (artikel_id, artikel_headings, artikel_desc, artikel_link, artikel_image, artikel_create_date, artikel_create_by, artikel_update_date, artikel_update_by, artikel_keyword, artikel_author) VALUES (nextval('artikelidseq'), $1, $2, $3, $4, current_timestamp, $5, current_timestamp, $6, $7, $8) RETURNING artikel_id;`
+	sqlStatement := `INSERT INTO ARTIKEL (artikel_id, artikel_headings, artikel_desc, artikel_link, artikel_image, artikel_create_date, artikel_create_by) 
+	                 VALUES (nextval('artikelidseq'), $1, $2, $3, $4, current_timestamp, $5) RETURNING artikel_id;`
 
 	var artikel_id int64
 
-	err := db.QueryRow(sqlStatement, artikel.Headings, artikel.Desc, artikel.Link, artikel.Image, artikel.CreateBy, artikel.UpdateBy, artikel.Keyword, artikel.Author).Scan(&artikel_id)
+	err := db.QueryRow(sqlStatement, artikel.Headings, artikel.Desc, artikel.Link, artikel.Image, artikel.CreateBy).Scan(&artikel_id)
 
 	if err != nil {
 		log.Fatalf("Tidak Bisa mengeksekusi query. %v", err)
@@ -260,7 +259,7 @@ func AmbilSemuaArtikel() ([]Artikel, error) {
 		var artikel Artikel
 
 		// ambil data video dan unmarshal ke structnya
-		err = rows.Scan(&artikel.ID, &artikel.Headings, &artikel.Desc, &artikel.Link, &artikel.Image, &artikel.CreateDate, &artikel.CreateBy, &artikel.UpdateDate, &artikel.UpdateBy, &artikel.Keyword, &artikel.Author)
+		err = rows.Scan(&artikel.ID, &artikel.VideoID, &artikel.Headings, &artikel.Desc, &artikel.Link, &artikel.Image, &artikel.CreateDate, &artikel.CreateBy, &artikel.UpdateDate, &artikel.UpdateBy)
 
 		if err != nil {
 			log.Fatalf("tidak bisa mengambil data. %v", err)
@@ -291,7 +290,7 @@ func AmbilSatuArtikel(id int64) (Artikel, error) {
 	// eksekusi sql statement
 	row := db.QueryRow(sqlStatement, id)
 
-	err := row.Scan(&artikel.ID, &artikel.Headings, &artikel.Desc, &artikel.Link, &artikel.Image, &artikel.CreateDate, &artikel.CreateBy, &artikel.UpdateDate, &artikel.UpdateBy, &artikel.Keyword, &artikel.Author)
+	err := row.Scan(&artikel.ID, &artikel.VideoID, &artikel.Headings, &artikel.Desc, &artikel.Link, &artikel.Image, &artikel.CreateDate, &artikel.CreateBy, &artikel.UpdateDate, &artikel.UpdateBy)
 
 	switch err {
 	case sql.ErrNoRows:
@@ -314,10 +313,10 @@ func UpdateArtikel(artikel_id int64, artikel Artikel) int64 {
 	defer db.Close()
 
 	// sql query create
-	sqlStatement := `UPDATE Artikel SET artikel_headings = $2, artikel_desc = $3, artikel_link = $4, artikel_image = $5, artikel_create_by = $6, artikel_update_by = $7, artikel_keyword = $8, artikel_author = $9 WHERE artikel_id=$1`
+	sqlStatement := `UPDATE Artikel SET artikel_headings = $2, artikel_desc = $3, artikel_link = $4, artikel_image = $5, artikel_create_by = $6, artikel_update_by = $7 WHERE artikel_id=$1`
 
 	// eksekusi sql statement
-	res, err := db.Exec(sqlStatement, artikel.ID, artikel.Headings, artikel.Desc, artikel.Link, artikel.Image, artikel.CreateBy, artikel.UpdateBy, artikel.Keyword, artikel.Author)
+	res, err := db.Exec(sqlStatement, artikel.ID, artikel.Headings, artikel.Desc, artikel.Link, artikel.Image, artikel.CreateBy, artikel.UpdateBy)
 
 	if err != nil {
 		log.Fatalf("Tidak bisa mengeksekusi query. %v", err)
