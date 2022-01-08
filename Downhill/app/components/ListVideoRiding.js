@@ -5,8 +5,10 @@ import Icon from 'react-native-vector-icons/Feather'
 import axios from 'axios';
 import HeaderTitle from './HeaderTitle';
 import Feather from 'react-native-vector-icons/Feather';
-import MenuPopup from "react-native-modal";
 import { useNavigation } from '@react-navigation/native';
+import FloatingButton from '../components/FloatingButton';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import Alert from "react-native-modal";
 
 const initialFormVideo = {
     video_id: "",
@@ -24,23 +26,51 @@ const ListVideoRiding = () => {
     const [users, setUsers] = useState([]);
     const [masterData, setMasterData] = useState([]);
     const [formVideo, setFormVideo] = useState(initialFormVideo)
-    const [isopen, setIsOpen] = useState(false);
     const [search, setsearch] = useState('');
+    const [iserror, setIsError] = useState(false);
+    const [iscorrect, setIsCorrect] = useState(false);
 
     const loadDataVideo = () => {
-        axios.get('http://10.0.2.2:3004/video').then(resp => {
+        axios.get('https://bd4e-180-253-2-149.ngrok.io/api/video').then(resp => {
             setUsers(resp.data);
             setMasterData(resp.data);
         });
     }
 
-    const handleSave = () => {
-        axios.put(`http://10.0.2.2:3004/video/${formVideo.video_id}`, formVideo).then(resp => {
-            setFormVideo("")
-            setModalVisibleVideo(false)
-            setFormVideo(initialFormVideo)
-            loadDataVideo();
-        })
+    const handleSave = (action) => {
+        switch (action) {
+            case 'CREATE': {
+                if (formVideo.video_headings == "" || formVideo.video_desc == "" || formVideo.video_create_by == "" || formVideo.video_link == "") {
+                    setIsError(!iserror);
+                } else {
+                    axios.post(`https://bd4e-180-253-2-149.ngrok.io/api/video`, formVideo).then(resp => {
+                        console.log("CREATE USER", resp);
+                        loadDataVideo();
+                        setIsCorrect(!iscorrect);
+                        setFormVideo("")
+                        setModalVisibleVideo(false)
+                    })
+                }
+            }
+                break;
+
+            case 'UPDATE': {
+                if (formVideo.video_headings == '' || formVideo.video_desc == '' || formVideo.video_create_by == '' || formVideo.link == '') {
+                    setIsError(!iserror);
+                } else {
+                    axios.put(`https://bd4e-180-253-2-149.ngrok.io/api/video/${formVideo.id}`, formVideo).then(resp => {
+                        loadDataVideo();
+                        setIsCorrect(!iscorrect);
+                        setFormVideo("")
+                        setModalVisibleVideo(false)
+                        setFormVideo(initialFormVideo)
+                    })
+                }
+            }
+                break;
+            default:
+                break;
+        }
     }
 
     const handleTextInput = (name, text) => {
@@ -53,7 +83,7 @@ const ListVideoRiding = () => {
     }
 
     const handleDeleteUser = (video_id) => {
-        axios.delete(`http://10.0.2.2:3004/video/${video_id}`).then(resp => {
+        axios.delete(`https://bd4e-180-253-2-149.ngrok.io/api/video/${video_id}`).then(resp => {
             loadDataVideo()
         })
     }
@@ -111,23 +141,13 @@ const ListVideoRiding = () => {
             </View>
             <TouchableOpacity>
                 <Feather
-                    name='menu'
+                    name='plus'
                     size={30}
                     color='#0C8EFF'
-                    onPress={() => setIsOpen(!isopen)}
-                    style={{ left: 370, top: -50, position: 'absolute' }}
+                    onPress={() => setModalVisibleVideo(!modalVisibleVideo)}
+                    style={{ left: 365, top: -50, position: 'absolute' }}
                 />
             </TouchableOpacity>
-            <MenuPopup isVisible={isopen} >
-                <View style={styles.menu}>
-                    <TouchableOpacity onPress={() => navigation.navigate('ListVideoRiding') || setIsOpen(false)}>
-                        <Text style={styles.pil1}>Video Riding</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => navigation.navigate('ListTipsRiding') || setIsOpen(false)}>
-                        <Text style={styles.pil2}>Tips Riding</Text>
-                    </TouchableOpacity>
-                </View>
-            </MenuPopup>
             <View
                 style={{
                     borderBottomWidth: 0.5,
@@ -146,6 +166,10 @@ const ListVideoRiding = () => {
                 renderItem={({ item: user }) => <CardVideoComponent data={user} handleClicked={handleSelectedUser} handleDeleteUser={handleDeleteUser} />}
                 keyExtractor={({ video_id }) => video_id}
             />
+            <FloatingButton style={{ bottom: 80, left: 350 }}
+                onArtikel={() => navigation.navigate('ListTipsRiding')}
+                onVideo={() => navigation.navigate('ListVideoRiding')}
+            />
             <Modal
                 visible={modalVisibleVideo}
                 animationType='fade'
@@ -154,7 +178,7 @@ const ListVideoRiding = () => {
                 <ScrollView style={styles.centeredModal}>
                     <View style={styles.modal}>
                         <View>
-                            <HeaderTitle title='Edit Data' />
+                            <HeaderTitle title='Guidance and Information' />
                             <Text style={styles.subtitle}>Video Riding</Text>
                         </View>
                         <Icon
@@ -210,12 +234,38 @@ const ListVideoRiding = () => {
                         </View>
                         <TouchableOpacity
                             style={styles.submit}
-                            onPress={() => handleSave()}>
+                            onPress={() => {
+                                if (!formVideo.id) {
+                                    handleSave('CREATE')
+                                } else {
+                                    handleSave('UPDATE')
+                                }
+                            }}>
                             <Text style={{ color: '#ffffff' }}>SAVE</Text>
                         </TouchableOpacity>
                     </View>
                 </ScrollView>
             </Modal>
+            <Alert isVisible={iserror} style={{ alignItems: 'center' }}>
+                <View style={styles.alert}>
+                    <Ionicons name="warning-outline" size={80} color="red" />
+                    <Text style={styles.jwarning}>Warning !</Text>
+                    <Text style={styles.kwarning}>Maaf, seluruh form{`\n`}harus terisi seluruhnya</Text>
+                    <TouchableOpacity onPress={() => setIsError(false)}>
+                        <Text style={styles.closeg}>Close</Text>
+                    </TouchableOpacity>
+                </View>
+            </Alert>
+            <Alert isVisible={iscorrect} style={{ alignItems: 'center' }}>
+                <View style={styles.alert}>
+                    <Ionicons name="checkmark-circle-outline" size={80} color="#0C8EFF" />
+                    <Text style={styles.jberhasil}>Berhasil !</Text>
+                    <Text style={styles.kberhasil}>Permintaan anda{`\n`}berhasil kami terima</Text>
+                    <TouchableOpacity onPress={() => setIsCorrect(false)}>
+                        <Text style={styles.closeb}>Close</Text>
+                    </TouchableOpacity>
+                </View>
+            </Alert>
         </View >
     );
 };
@@ -295,6 +345,62 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         borderRadius: 5,
         textAlign: "center",
+    },
+    page: {
+        flex: 1,
+        backgroundColor: "#ffffff"
+    },
+    kwarning: {
+        color: 'black',
+        marginBottom: 10,
+        textAlign: 'center'
+    },
+    jwarning: {
+        fontWeight: 'bold',
+        color: 'black',
+        fontSize: 28,
+        marginBottom: 10
+    },
+    closeg: {
+        color: 'white',
+        backgroundColor: 'red',
+        fontWeight: 'bold',
+        fontSize: 18,
+        width: 100,
+        paddingVertical: 5,
+        textAlign: 'center',
+        borderRadius: 5,
+        marginTop: 10,
+    },
+    alert: {
+        width: 300,
+        height: 300,
+        backgroundColor: '#fff',
+        borderRadius: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    jberhasil: {
+        fontWeight: 'bold',
+        color: 'black',
+        fontSize: 28,
+        marginBottom: 10
+    },
+    kberhasil: {
+        color: 'black',
+        marginBottom: 10,
+        textAlign: 'center'
+    },
+    closeb: {
+        color: 'white',
+        backgroundColor: '#0C8EFF',
+        fontWeight: 'bold',
+        fontSize: 18,
+        width: 100,
+        paddingVertical: 5,
+        textAlign: 'center',
+        borderRadius: 5,
+        marginTop: 10,
     },
 });
 

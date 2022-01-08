@@ -48,7 +48,7 @@ export default class FloatingButton extends React.Component {
                 {
                     rotate: this.animation.interpolate({
                         inputRange: [0, 1],
-                        outputRange: ["0deg", "45deg"]
+                        outputRange: ["0deg", "180deg"]
                     })
                 }
             ]
@@ -70,7 +70,7 @@ export default class FloatingButton extends React.Component {
 
                 <TouchableWithoutFeedback onPress={this.toggleMenu}>
                     <Animated.View style={[styles.button, styles.menu, rotation]}>
-                        <AntDesign name="plus" size={24} color="#ffffff" />
+                        <AntDesign name="up" size={24} color="#ffffff" />
                     </Animated.View>
                 </TouchableWithoutFeedback>
             </View>
