@@ -15,6 +15,7 @@ const initialFormArtikel = {
     artikel_headings: "",
     artikel_desc: "",
     artikel_created_by: "",
+    artikel_updated_by: "",
     artikel_link: "",
     artikel_image: "",
 }
@@ -30,9 +31,12 @@ const ListTipsRiding = () => {
     const [search, setsearch] = useState('');
     const [iserror, setIsError] = useState(false);
     const [iscorrect, setIsCorrect] = useState(false);
+    const [crudvalue, setCrudValue] = useState(formArtikel.artikel_created_by);
+    const [crudinput, setCrudInput] = useState("artikel_created_by");
+    const [crudupdate, setCrudUpdate] = useState("SAVE");
 
     const loadDataArtikel = () => {
-        axios.get('https://bd4e-180-253-2-149.ngrok.io/api/artikel').then(resp => {
+        axios.get('https://e8fc-180-253-2-149.ngrok.io/api/artikel').then(resp => {
             setUsers(resp.data);
             setMasterData(resp.data);
         });
@@ -44,11 +48,15 @@ const ListTipsRiding = () => {
                 if (formArtikel.artikel_headings == "" || formArtikel.artikel_desc == "" || formArtikel.artikel_created_by == "" || formArtikel.artikel_link == "" || formArtikel.artikel_image == "") {
                     setIsError(!iserror);
                 } else {
-                    axios.post(`https://bd4e-180-253-2-149.ngrok.io/api/artikel`, formArtikel).then(resp => {
+                    axios.post(`https://e8fc-180-253-2-149.ngrok.io/api/artikel`, formArtikel).then(resp => {
                         console.log("CREATE USER", resp);
                         loadDataArtikel();
                         setIsCorrect(!iscorrect);
                         setFormArtikel("")
+                        setCrud("Created By")
+                        setCrudUpdate("SAVE")
+                        setCrudInput("artikel_created_by")
+                        setCrudValue(formArtikel.artikel_created_by)
                         setModalVisibleArtikel(false)
                     })
                 }
@@ -59,7 +67,7 @@ const ListTipsRiding = () => {
                 if (formArtikel.artikel_headings == '' || formArtikel.artikel_desc == '' || formArtikel.artikel_created_by == '' || formArtikel.artikel_link == '' || formArtikel.artikel_image == "") {
                     setIsError(!iserror);
                 } else {
-                    axios.put(`https://bd4e-180-253-2-149.ngrok.io/api/artikel/${formArtikel.id}`, formArtikel).then(resp => {
+                    axios.put(`https://e8fc-180-253-2-149.ngrok.io/api/artikel/${formArtikel.artikel_id}`, formArtikel).then(resp => {
                         loadDataArtikel();
                         setIsCorrect(!iscorrect);
                         setFormArtikel("")
@@ -80,11 +88,15 @@ const ListTipsRiding = () => {
 
     const handleSelectedUser = (user) => {
         setFormArtikel(user)
+        setCrud("Updated By")
+        setCrudUpdate("UPDATE")
+        setCrudInput("artikel_updated_by")
+        setCrudValue(formArtikel.artikel_updated_by)
         setModalVisibleArtikel(true)
     }
 
     const handleDeleteUser = (artikel_id) => {
-        axios.delete(`https://bd4e-180-253-2-149.ngrok.io/api/artikel/${artikel_id}`).then(resp => {
+        axios.delete(`https://feb0-180-253-2-149.ngrok.io/api/artikel/${artikel_id}`).then(resp => {
             loadDataArtikel()
         })
     }
@@ -187,7 +199,13 @@ const ListTipsRiding = () => {
                             style={styles.cancel}
                             name='x'
                             size={24}
-                            onPress={() => setModalVisibleArtikel(false) || setFormArtikel("")}
+                            onPress={() =>
+                                setModalVisibleArtikel(false)
+                                || setFormArtikel("")
+                                || setCrud("Created By")
+                                || setCrudUpdate("SAVE")
+                                || setCrudInput("artikel_created_by")
+                                || setCrudValue(formArtikel.artikel_created_by)}
                         />
                         <View
                             style={{
@@ -219,12 +237,12 @@ const ListTipsRiding = () => {
                                 multiline={true}
                                 numberOfLines={5}
                             />
-                            <Text style={styles.title}>Created By</Text>
+                            <Text style={styles.title}>{crud}</Text>
                             <TextInput
                                 style={styles.textinput}
-                                value={formArtikel.artikel_created_by}
+                                value={crudvalue}
                                 placeholder="Masukan Pembuat"
-                                onChangeText={(text) => handleTextInput('artikel_created_by', text)}
+                                onChangeText={(text) => handleTextInput({ crudinput }, text)}
                             />
                             <Text style={styles.title}>Url Artikel</Text>
                             <TextInput
@@ -244,13 +262,13 @@ const ListTipsRiding = () => {
                         <TouchableOpacity
                             style={styles.submit}
                             onPress={() => {
-                                if (!formArtikel.id) {
+                                if (!formArtikel.artikel_id) {
                                     handleSave('CREATE')
                                 } else {
                                     handleSave('UPDATE')
                                 }
                             }}>
-                            <Text style={{ color: '#ffffff' }}>SAVE</Text>
+                            <Text style={{ color: '#ffffff' }}>{crudupdate}</Text>
                         </TouchableOpacity>
                     </View>
                 </ScrollView>
