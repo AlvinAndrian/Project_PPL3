@@ -12,10 +12,10 @@ const CardArtikelComponent = ({ data, handleClicked, handleDeleteUser }) => {
             <TouchableOpacity style={styles.list} onPress={() => handleClicked(data)}>
                 <Image
                     style={{ width: 100, height: 100, position: 'absolute', top: 13, left: 10, borderRadius: 8 }}
-                    source={{ uri: data.artikel_link }} />
+                    source={{ uri: data.artikel_image }} />
                 <Text style={styles.judul} numberOfLines={1}>{data.artikel_headings}</Text>
                 <Text style={styles.deskripsi} numberOfLines={2}>{data.artikel_desc}</Text>
-                <Text style={styles.penulis}>{data.artikel_created_by}</Text>
+                <Text style={styles.penulis}>{data.artikel_create_by}</Text>
                 <Icon
                     name='x'
                     size={24}

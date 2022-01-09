@@ -1,44 +1,16 @@
 {
-  "artikel": [{
-      "artikel_headings": "aaaa",
-      "artikel_desc": "aaaa",
-      "artikel_created_by": "aaaa",
-      "artikel_link": "aaaa",
-      "artikel_image": "aaaa",
+  "artikel": [
+    {
+      "artikel_headings": "Orang baik",
+      "artikel_desc": "Dari sebelah kanan terdengar sebuah truk akan melintas. Saya mengarahkan sepeda di jalan menanjak itu ke sisi kiri. Saya kehilangan momentum dan terpaksa harus mengubah gear supaya mengayuh lebih ringan. KLEK! Hanger rear derailleur sepeda saya patah saat menanjak. Saya meminggirkan sepeda di arah berlawanan, makan perbekalan sambil menunggu adanya bus mini yang lewat menuju Kota Kinabalu. Baru sebentar menunggu, sebuah bus mini lewat, pengemudinya turun demi melihat keadaan saya yang sendirian di jalan sepi yang mirip jalur selatan pulau Jawa. Cik Man nama pengemudi bus mini itu. Ia kebetulan lewat karena ingin pulang kampung ke Kota Merudu.",
+      "artikel_create_by": "Alvin Andrian Rizki",
+      "artikel_link": "https://www.kompasiana.com/wahyudiagus/61cd2f7d4b660d02c9691d54/orang-sabah-itu-ramah-sebuah-pengalaman-saat-solo-touring-sepeda-dari-kota-kinabalu",
+      "artikel_image": "http://assets.kompasiana.com/items/album/2021/12/30/whatsapp-image-2021-12-29-at-11-17-12-am-61cd2bf74b660d118e3a2452.jpeg?t=o&v=770",
       "id": 1
     },
     {
-      "artikel_headings": "bbbbb",
-      "artikel_desc": "bbbbb",
-      "artikel_created_by": "bbbbb",
-      "artikel_link": "bb",
-      "artikel_image": "bbbb",
+      "artikel_headings": "test",
       "id": 2
-    },
-    {
-      "artikel_headings": "cccc",
-      "artikel_desc": "cccc",
-      "artikel_created_by": "cccc",
-      "artikel_link": "ccc",
-      "artikel_image": "ccc",
-      "id": 3
-    },
-    {
-      "artikel_headings": "ddddd",
-      "artikel_desc": "ddd",
-      "artikel_created_by": "dddd",
-      "artikel_link": "ddd",
-      "artikel_image": "dddd",
-      "id": 4
-    },
-    {
-      "artikel_id": "",
-      "artikel_headings": "zzz",
-      "artikel_desc": "zzz",
-      "artikel_created_by": "zzz",
-      "artikel_link": "zzz",
-      "artikel_image": "zzz",
-      "id": 5
     }
   ]
 }

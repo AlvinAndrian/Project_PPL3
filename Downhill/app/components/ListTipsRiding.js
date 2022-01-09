@@ -10,12 +10,13 @@ import FloatingButton from '../components/FloatingButton';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Alert from "react-native-modal";
 
+// nama idnya masih id belum artikel_id
+
 const initialFormArtikel = {
-    artikel_id: "",
+    id: "",
     artikel_headings: "",
     artikel_desc: "",
-    artikel_created_by: "",
-    artikel_updated_by: "",
+    artikel_create_by: "",
     artikel_link: "",
     artikel_image: "",
 }
@@ -31,12 +32,12 @@ const ListTipsRiding = () => {
     const [search, setsearch] = useState('');
     const [iserror, setIsError] = useState(false);
     const [iscorrect, setIsCorrect] = useState(false);
-    const [crudvalue, setCrudValue] = useState(formArtikel.artikel_created_by);
-    const [crudinput, setCrudInput] = useState("artikel_created_by");
-    const [crudupdate, setCrudUpdate] = useState("SAVE");
+    const [crudupdate, setCrudUpdate] = useState("");
+
+    // http://10.0.2.2:8080/api/artikel
 
     const loadDataArtikel = () => {
-        axios.get('https://e8fc-180-253-2-149.ngrok.io/api/artikel').then(resp => {
+        axios.get('http://10.0.2.2:3005/artikel').then(resp => {
             setUsers(resp.data);
             setMasterData(resp.data);
         });
@@ -45,18 +46,14 @@ const ListTipsRiding = () => {
     const handleSave = (action) => {
         switch (action) {
             case 'CREATE': {
-                if (formArtikel.artikel_headings == "" || formArtikel.artikel_desc == "" || formArtikel.artikel_created_by == "" || formArtikel.artikel_link == "" || formArtikel.artikel_image == "") {
+                if (formArtikel.artikel_headings == "" || formArtikel.artikel_desc == "" || formArtikel.artikel_create_by == "" || formArtikel.artikel_link == "" || formArtikel.artikel_image == "") {
                     setIsError(!iserror);
                 } else {
-                    axios.post(`https://e8fc-180-253-2-149.ngrok.io/api/artikel`, formArtikel).then(resp => {
+                    axios.post(`http://10.0.2.2:3005/artikel`, formArtikel).then(resp => {
                         console.log("CREATE USER", resp);
                         loadDataArtikel();
                         setIsCorrect(!iscorrect);
                         setFormArtikel("")
-                        setCrud("Created By")
-                        setCrudUpdate("SAVE")
-                        setCrudInput("artikel_created_by")
-                        setCrudValue(formArtikel.artikel_created_by)
                         setModalVisibleArtikel(false)
                     })
                 }
@@ -64,10 +61,10 @@ const ListTipsRiding = () => {
                 break;
 
             case 'UPDATE': {
-                if (formArtikel.artikel_headings == '' || formArtikel.artikel_desc == '' || formArtikel.artikel_created_by == '' || formArtikel.artikel_link == '' || formArtikel.artikel_image == "") {
+                if (formArtikel.artikel_headings == "" || formArtikel.artikel_desc == "" || formArtikel.artikel_create_by == "" || formArtikel.artikel_link == "" || formArtikel.artikel_image == "") {
                     setIsError(!iserror);
                 } else {
-                    axios.put(`https://e8fc-180-253-2-149.ngrok.io/api/artikel/${formArtikel.artikel_id}`, formArtikel).then(resp => {
+                    axios.put(`http://10.0.2.2:3005/artikel/${formArtikel.id}`, formArtikel).then(resp => {
                         loadDataArtikel();
                         setIsCorrect(!iscorrect);
                         setFormArtikel("")
@@ -88,15 +85,12 @@ const ListTipsRiding = () => {
 
     const handleSelectedUser = (user) => {
         setFormArtikel(user)
-        setCrud("Updated By")
         setCrudUpdate("UPDATE")
-        setCrudInput("artikel_updated_by")
-        setCrudValue(formArtikel.artikel_updated_by)
         setModalVisibleArtikel(true)
     }
 
-    const handleDeleteUser = (artikel_id) => {
-        axios.delete(`https://feb0-180-253-2-149.ngrok.io/api/artikel/${artikel_id}`).then(resp => {
+    const handleDeleteUser = (id) => {
+        axios.delete(`http://10.0.2.2:3005/artikel/${id}`).then(resp => {
             loadDataArtikel()
         })
     }
@@ -158,7 +152,10 @@ const ListTipsRiding = () => {
                     name='plus'
                     size={30}
                     color='#0C8EFF'
-                    onPress={() => setModalVisibleArtikel(!modalVisibleArtikel)}
+                    onPress={() =>
+                        setModalVisibleArtikel(!modalVisibleArtikel)
+                        || setCrudUpdate("SAVE")
+                    }
                     style={{ left: 365, top: -50, position: 'absolute' }}
                 />
             </TouchableOpacity>
@@ -178,7 +175,7 @@ const ListTipsRiding = () => {
             <FlatList
                 data={users}
                 renderItem={({ item: user }) => <CardArtikelComponent data={user} handleClicked={handleSelectedUser} handleDeleteUser={handleDeleteUser} />}
-                keyExtractor={({ artikel_id }) => artikel_id}
+                keyExtractor={({ id }) => id}
             />
             <FloatingButton style={{ bottom: 80, left: 350 }}
                 onArtikel={() => navigation.navigate('ListTipsRiding')}
@@ -202,10 +199,7 @@ const ListTipsRiding = () => {
                             onPress={() =>
                                 setModalVisibleArtikel(false)
                                 || setFormArtikel("")
-                                || setCrud("Created By")
-                                || setCrudUpdate("SAVE")
-                                || setCrudInput("artikel_created_by")
-                                || setCrudValue(formArtikel.artikel_created_by)}
+                            }
                         />
                         <View
                             style={{
@@ -237,12 +231,12 @@ const ListTipsRiding = () => {
                                 multiline={true}
                                 numberOfLines={5}
                             />
-                            <Text style={styles.title}>{crud}</Text>
+                            <Text style={styles.title}>Create By</Text>
                             <TextInput
                                 style={styles.textinput}
-                                value={crudvalue}
+                                value={formArtikel.artikel_create_by}
                                 placeholder="Masukan Pembuat"
-                                onChangeText={(text) => handleTextInput({ crudinput }, text)}
+                                onChangeText={(text) => handleTextInput('artikel_create_by', text)}
                             />
                             <Text style={styles.title}>Url Artikel</Text>
                             <TextInput
@@ -262,7 +256,7 @@ const ListTipsRiding = () => {
                         <TouchableOpacity
                             style={styles.submit}
                             onPress={() => {
-                                if (!formArtikel.artikel_id) {
+                                if (!formArtikel.id) {
                                     handleSave('CREATE')
                                 } else {
                                     handleSave('UPDATE')

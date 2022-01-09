@@ -12,7 +12,7 @@ const CardVideoComponent = ({ data, handleClicked, handleDeleteUser }) => {
             <TouchableOpacity style={styles.list} onPress={() => handleClicked(data)}>
                 <Text style={styles.judul} numberOfLines={1}>{data.video_headings}</Text>
                 <Text style={styles.deskripsi} numberOfLines={2}>{data.video_desc}</Text>
-                <Text style={styles.penulis}>{data.video_created_by}</Text>
+                <Text style={styles.penulis}>{data.video_create_by}</Text>
                 <Icon
                     name='x'
                     size={24}

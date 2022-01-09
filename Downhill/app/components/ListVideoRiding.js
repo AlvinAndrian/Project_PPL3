@@ -10,12 +10,13 @@ import FloatingButton from '../components/FloatingButton';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Alert from "react-native-modal";
 
+// nama idnya masih id belum video_id
+
 const initialFormVideo = {
-    video_id: "",
+    id: "",
     video_headings: "",
     video_desc: "",
-    video_created_by: "",
-    video_updated_by: "",
+    video_create_by: "",
     video_link: "",
 }
 
@@ -30,10 +31,7 @@ const ListVideoRiding = () => {
     const [search, setsearch] = useState('');
     const [iserror, setIsError] = useState(false);
     const [iscorrect, setIsCorrect] = useState(false);
-    const [crud, setCrud] = useState('Created By');
-    const [crudvalue, setCrudValue] = useState(formVideo.video_created_by);
-    const [crudinput, setCrudInput] = useState("video_created_by");
-    const [crudupdate, setCrudUpdate] = useState("SAVE");
+    const [crudupdate, setCrudUpdate] = useState("");
 
     // https://feb0-180-253-2-149.ngrok.io/api/video
     // http://10.0.2.2:8080/api/video
@@ -48,7 +46,7 @@ const ListVideoRiding = () => {
     const handleSave = (action) => {
         switch (action) {
             case 'CREATE': {
-                if (formVideo.video_headings == "" || formVideo.video_desc == "" || formVideo.video_created_by == "" || formVideo.video_link == "") {
+                if (formVideo.video_headings == "" || formVideo.video_desc == "" || formVideo.video_create_by == "" || formVideo.video_link == "") {
                     setIsError(!iserror);
                 } else {
                     axios.post(`http://10.0.2.2:3004/video`, formVideo).then(resp => {
@@ -63,17 +61,14 @@ const ListVideoRiding = () => {
                 break;
 
             case 'UPDATE': {
-                if (formVideo.video_headings == '' || formVideo.video_desc == '' || formVideo.video_created_by == '' || formVideo.link == '') {
+                if (formVideo.video_headings == "" || formVideo.video_desc == "" || formVideo.video_create_by == "" || formVideo.video_link == "") {
                     setIsError(!iserror);
                 } else {
-                    axios.put(`http://10.0.2.2:3004/video/${formVideo.video_id}`, formVideo).then(resp => {
+                    axios.put(`http://10.0.2.2:3004/video/${formVideo.id}`, formVideo).then(resp => {
+                        console.log("UPDATE USER", resp);
                         loadDataVideo();
                         setIsCorrect(!iscorrect);
                         setFormVideo("")
-                        setCrud("Created By")
-                        setCrudUpdate("SAVE")
-                        setCrudInput("video_created_by")
-                        setCrudValue(formVideo.video_created_by)
                         setModalVisibleVideo(false)
                         setFormVideo(initialFormVideo)
                     })
@@ -91,15 +86,12 @@ const ListVideoRiding = () => {
 
     const handleSelectedUser = (user) => {
         setFormVideo(user)
-        setCrud("Update By")
         setCrudUpdate("UPDATE")
-        setCrudValue(formVideo.video_updated_by)
-        setCrudInput("video_updated_by")
         setModalVisibleVideo(true)
     }
 
-    const handleDeleteUser = (video_id) => {
-        axios.delete(`https://feb0-180-253-2-149.ngrok.io/api/video/${video_id}`).then(resp => {
+    const handleDeleteUser = (id) => {
+        axios.delete(`http://10.0.2.2:3004/video/${id}`).then(resp => {
             loadDataVideo()
         })
     }
@@ -160,7 +152,10 @@ const ListVideoRiding = () => {
                     name='plus'
                     size={30}
                     color='#0C8EFF'
-                    onPress={() => setModalVisibleVideo(!modalVisibleVideo)}
+                    onPress={() =>
+                        setModalVisibleVideo(!modalVisibleVideo)
+                        || setCrudUpdate("SAVE")
+                    }
                     style={{ left: 365, top: -50, position: 'absolute' }}
                 />
             </TouchableOpacity>
@@ -180,7 +175,7 @@ const ListVideoRiding = () => {
             <FlatList
                 data={users}
                 renderItem={({ item: user }) => <CardVideoComponent data={user} handleClicked={handleSelectedUser} handleDeleteUser={handleDeleteUser} />}
-                keyExtractor={({ video_id }) => video_id}
+                keyExtractor={({ id }) => id}
             />
             <FloatingButton style={{ bottom: 80, left: 350 }}
                 onArtikel={() => navigation.navigate('ListTipsRiding')}
@@ -204,10 +199,7 @@ const ListVideoRiding = () => {
                             onPress={() =>
                                 setModalVisibleVideo(false)
                                 || setFormVideo("")
-                                || setCrud("Created By")
-                                || setCrudUpdate("SAVE")
-                                || setCrudInput("video_created_by")
-                                || setCrudValue(formVideo.video_created_by)}
+                            }
                         />
                         <View
                             style={{
@@ -239,12 +231,12 @@ const ListVideoRiding = () => {
                                 multiline={true}
                                 numberOfLines={5}
                             />
-                            <Text style={styles.title}>{crud}</Text>
+                            <Text style={styles.title}>Create By</Text>
                             <TextInput
                                 style={styles.textinput}
-                                value={crudvalue}
+                                value={formVideo.video_create_by}
                                 placeholder="Masukan Pembuat"
-                                onChangeText={(text) => handleTextInput({ crudinput }, text)}
+                                onChangeText={(text) => handleTextInput('video_create_by', text)}
                             />
                             <Text style={styles.title}>Url Video</Text>
                             <TextInput
@@ -257,7 +249,7 @@ const ListVideoRiding = () => {
                         <TouchableOpacity
                             style={styles.submit}
                             onPress={() => {
-                                if (!formVideo.video_id) {
+                                if (!formVideo.id) {
                                     handleSave('CREATE')
                                 } else {
                                     handleSave('UPDATE')
